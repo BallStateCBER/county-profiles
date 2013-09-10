@@ -1,0 +1,151 @@
+/* IMPORT */
+/* IMPORT */
+#data_import {
+  margin: 20px 0;
+  width: 700px;
+}
+#data_import .success {
+  background-color: #AFFFBA;
+  color: green;
+  font-weight: bold;
+}
+#data_import .error {
+  background-color: #FFCBAF;
+  color: red;
+  font-weight: bold;
+}
+#data_import .notification {
+  background-color: #CFE5FF;
+  color: blue;
+  font-weight: bold;
+}
+#data_import .redundant {
+  color: black;
+  font-weight: bold;
+}
+#data_import table.import {
+  border: 1px solid #666;
+  border-collapse: collapse;
+  font-size: 8pt;
+}
+#data_import table.import thead {
+  background-color: black;
+  color: white;
+}
+#data_import table.import td {
+  padding: 3px;
+}
+#data_import .color_code span {
+  border: 1px solid black;
+  margin: 0 5px;
+  padding: 0 5px;
+  width: 140px;
+}
+#import_header {
+  border-collapse: collapse;
+}
+#import_header th {
+  text-align: left;
+}
+#import_header th,
+#import_header > tbody > tr > td {
+  border: 1px solid #444;
+  padding: 5px;
+}
+#import_header .modes td {
+  padding: 0 10px;
+}
+#import_header .modes tbody td {
+  font-size: 80%;
+  text-align: center;
+}
+#import_header .modes tbody img {
+  display: block;
+  margin: auto;
+}
+#import_header ul {
+  margin: 0;
+  padding: 0;
+}
+#import_header li {
+  list-style-type: none;
+}
+#import_header .actions {
+  font-size: 90%;
+}
+#import_header .actions img {
+  margin-right: 15px;
+  vertical-align: bottom;
+}
+#import_header .actions a {
+  text-decoration: none;
+}
+#import_header .actions a:hover span {
+  text-decoration: underline;
+}
+#import_header .progress table {
+  border: 1px solid black;
+  height: 20pt;
+  width: 500px;
+}
+#import_header .progress table tr td:nth-child(1) {
+  background-color: black;
+  font-size: 0pt;
+}
+#import_header .progress table tr td:nth-child(2) {
+  background-color: white;
+  font-size: 0pt;
+}
+#import_header .action_buttons a {
+  display: block;
+  float: left;
+  width: 50px;
+}
+#import_header .action_buttons a img {
+  display: block;
+  margin: auto;
+}
+#import_header .action_buttons a span {
+  display: block;
+  text-align: center;
+}
+#modes_info {
+  font-size: 90%;
+}
+.processing_import {
+  border-collapse: collapse;
+}
+.processing_import thead td {
+  background-color: #000;
+  color: #fff;
+  padding: 5px;
+}
+.processing_import tbody td {
+  border: 1px solid #444;
+  padding: 5px;
+}
+#auto_toggle {
+  margin-bottom: 10px;
+}
+#auto_toggle a {
+  font-size: 150%;
+  margin-right: 5px;
+  padding: 5px;
+}
+#auto_toggle a.checked {
+  font-weight: bold;
+  text-decoration: underline;
+}
+#load_import_results {
+  border: 1px solid black;
+  float: left;
+  margin: 20px 0;
+  max-height: 400px;
+  padding: 10px;
+  overflow: auto;
+  width: 700px;
+}
+#load_import_results tr.header {
+  background-color: #000;
+  color: #fff;
+}

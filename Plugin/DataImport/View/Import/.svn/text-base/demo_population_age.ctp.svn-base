@@ -1,0 +1,53 @@
+<?php
+// Data: Population / Age (1990 and 2000)
+
+
+$params = array(
+	'file_path' => $directory.'\\05 - Dependency Ratios 2000.txt',
+	'safety' => true,
+	'overwrite_data' => true,
+	'rows_per_page' => 1,
+	'source_id' => 1,	// US Census (http://factfinder.census.gov/servlet/DatasetMainPageServlet?_ds_name=DEC_2000_SF1_U&_program=DEC&_lang=en)
+	'header_row_count' => 3,
+	'columns' => array(
+		'fips' => 0,
+		'loc_name' => 3,
+		'year' => 4,
+
+		// Column => (Data category name, Data category ID)
+		'data' => array(
+			 5 => array('Under 5 years', 		2),
+			 6 => array('5 to 9 years',			3),
+			 7 => array('10 to 14 years',		4),
+			 8 => array('15 to 17 years',		5),
+			 9 => array('18 and 19 years',		6),
+			10 => array('20 years',				7),
+			11 => array('21 years',				8),
+			12 => array('22 to 24 years',		9),
+			13 => array('25 to 29 years',		10),
+			14 => array('30 to 34 years',		11),
+			15 => array('35 to 39 years',		12),
+			16 => array('40 to 44 years',		13),
+			17 => array('45 to 49 years',		14),
+			18 => array('50 to 54 years',		15),
+			19 => array('55 to 59 years',		16),
+			20 => array('60 and 61 years',		17),
+			21 => array('62 to 64 years',		18),
+			22 => array('65 to 69 years',		19),
+			23 => array('70 to 74 years',		20),
+			24 => array('75 to 79 years',		21),
+			25 => array('80 to 84 years',		22),
+			26 => array('85 years and over',	23)
+		)
+	)
+);
+include('../views/elements/import/helpers.php');
+
+
+
+
+?>
+
+</tbody></table>
+
+<?php include('../views/elements/import/standard_footer.php'); ?>

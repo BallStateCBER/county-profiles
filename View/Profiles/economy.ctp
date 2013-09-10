@@ -1,0 +1,1 @@
+<?php echo $this->element('profile_tab_contents'); ?>

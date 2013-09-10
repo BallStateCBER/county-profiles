@@ -1,0 +1,56 @@
+<?php 
+	// Import complete, disable auto
+	if ($page !== false && ! $rows_encountered) {
+		$this->Js->buffer("import_set_auto(0)");
+		$auto = 0;
+	}
+	
+	// Update page, show/hide buttons 
+	if ($page === false) {
+		$this->Js->buffer("
+			$('buttons_init').show();
+			$('buttons_post_init').hide();
+			$('import_page').value = '';
+		");
+	} else {
+		$this->Js->buffer("
+			$('buttons_init').hide();
+			$('buttons_post_init').show();
+		");
+		if ($page == 0) {
+			$this->Js->buffer("
+				$('button_prev').hide();
+				$('import_page').value = 0;
+			");
+		} elseif ($page > 0) {
+			$this->Js->buffer("
+				$('button_prev').show();
+				$('import_page').value = $page;
+			");
+		}
+	}
+	if ($rows_encountered) {
+		$this->Js->buffer("
+			$('button_rerun').show();
+			$('button_next').show();
+		");
+	} else {
+		$this->Js->buffer("
+			$('button_rerun').hide();
+			$('button_next').hide();
+		");
+	}
+	
+	// If in 'auto mode', open up the next page in the sequence.
+	if ($auto) {
+		//Former method: location.href = '?page=".($page + 1)."&auto=1';
+		$this->Js->buffer('import_load_page('.($page + 1).')');
+		$this->Js->buffer("$('button_pause').show();");
+	} else {
+		$this->Js->buffer("$('button_pause').hide();");
+	}
+?>
+
+<?php echo $import_results; ?>
+
+<?php echo $this->element('import/progress_indicator'); ?>

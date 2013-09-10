@@ -1,0 +1,66 @@
+/* IMPORT */
+#data_import {
+	margin: 20px 0; width: 700px;
+	.success {background-color: #AFFFBA; color: green; font-weight: bold;}
+	.error {background-color: #FFCBAF; color: red; font-weight: bold;}
+	.notification {background-color: #CFE5FF; color: blue; font-weight: bold;}
+	.redundant {color: black; font-weight: bold;}
+	table.import {
+		border: 1px solid #666; border-collapse: collapse; font-size: 8pt;
+		thead {background-color: black; color: white;}
+		td {padding: 3px;}
+	}
+	.color_code span {border: 1px solid black; margin: 0 5px; padding: 0 5px; width: 140px;}
+}
+
+#import_header {
+	border-collapse: collapse;
+	th {text-align: left;}
+	th, > tbody > tr > td {border: 1px solid #444; padding: 5px;}
+	.modes {
+		td {padding: 0 10px;}
+		tbody {
+			td {font-size: 80%; text-align: center;}
+			img {display: block; margin: auto;}
+		}
+	}
+	ul {margin: 0; padding: 0;}
+	li {list-style-type: none;}
+	.actions {
+		font-size: 90%;
+		img {margin-right: 15px; vertical-align: bottom;}
+		a {
+			text-decoration: none;
+			&:hover span {text-decoration: underline;}
+		}
+	}
+	.progress table {
+		border: 1px solid black; height: 20pt; width: 500px;
+		tr td {
+			&:nth-child(1) {background-color: black; font-size: 0pt;}
+			&:nth-child(2) {background-color: white; font-size: 0pt;}
+		}
+	}
+	.action_buttons a {
+		display: block; float: left; width: 50px;
+		img {display: block; margin: auto;}
+		span {display: block; text-align: center;}
+	}
+}
+#modes_info {font-size: 90%;}
+.processing_import {
+	border-collapse: collapse;
+	thead td {background-color: #000; color: #fff; padding: 5px;}
+	tbody td {border: 1px solid #444; padding: 5px;}
+}
+#auto_toggle {
+	margin-bottom: 10px;
+	a {
+		font-size: 150%; margin-right: 5px; padding: 5px;
+		&.checked {font-weight: bold; text-decoration: underline;}
+	}
+}
+#load_import_results {
+	border: 1px solid black; float: left; margin: 20px 0; max-height: 400px; padding: 10px; overflow: auto; width: 700px;
+	tr.header {background-color: #000; color: #fff;}
+}
