@@ -4,7 +4,7 @@ App::uses('Location', 'Model');
 class DataOutputBehavior extends ModelBehavior {
 	public $Location = null;	// Location object used to look up location info
 	
-	public function setup(Model $Model) {
+	public function setup(Model $Model, $config = array()) {
 		$this->Location = new Location();	
 	}
 	
