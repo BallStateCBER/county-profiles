@@ -12,7 +12,7 @@
 
 <?php $this->start('footer_about'); ?>
 	<h3>
-		About This Site
+		About County Profiles
 	</h3>
 	<p>
 		This site was created through a partnership between <a href="http://www.bsu.edu/bbc">Ball State's 
