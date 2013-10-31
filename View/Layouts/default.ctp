@@ -10,6 +10,22 @@
 	</h1>
 <?php $this->end(); ?>
 
+<?php $this->start('footer_about'); ?>
+	<h3>
+		About This Site
+	</h3>
+	<p>
+		This site was created through a partnership between <a href="http://www.bsu.edu/bbc">Ball State's 
+		Building Better Communities</a> and the Center for Business and Economic Research.
+	</p>
+	<p>
+		The <a href="http://www.cberdata.org/">CBER Data Center</a> is a product of the Center for Business 
+		and Economic Research at Ball State University.  CBER's mission is to conduct relevant and timely 
+		public policy research on a wide range of economic issues affecting the state and nation.  
+		<a href="http://www.bsu.edu/cber">Learn more</a>.
+	</p>
+<?php $this->end(); ?>
+
 <div id="content">
 	<?php echo $this->fetch('content'); ?>
 </div>
