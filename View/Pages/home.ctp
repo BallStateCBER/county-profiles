@@ -67,7 +67,7 @@
 				<div class="chart_loading">
 					<img src="/data_center/img/loading_small.gif" /> Loading chart...
 				</div>
-				<?php $this->GoogleChart->createJsChart($example_segment['Chart']['chart']); ?>
+				<?php $this->GoogleCharts->createJsChart($example_segment['Chart']['chart']); ?>
 			</div>
 			<div class="example_table" style="display: none;">
 				<?php echo $this->element('table', array(

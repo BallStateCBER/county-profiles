@@ -82,7 +82,7 @@
 								<div class="chart_loading">
 									<img src="/data_center/img/loading_small.gif" /> Loading chart...
 								</div>
-								<?php $this->GoogleChart->createJsChart($subsegment['Chart']['chart'], $ss_name); ?>
+								<?php $this->GoogleCharts->createJsChart($subsegment['Chart']['chart'], $ss_name); ?>
 							</div>
 							<?php if ($subsegment['Chart']['footnote']): ?>
 								<p class="footnote">
@@ -96,7 +96,7 @@
 						<div class="chart_loading">
 							<img src="/data_center/img/loading_small.gif" /> Loading chart...
 						</div>
-						<?php $this->GoogleChart->createJsChart($segment['Chart']['chart']); ?>
+						<?php $this->GoogleCharts->createJsChart($segment['Chart']['chart']); ?>
 					</div>
 					<?php if ($segment['Chart']['footnote']): ?>
 						<p class="footnote">

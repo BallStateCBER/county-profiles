@@ -3,7 +3,7 @@ App::uses('AppController', 'Controller');
 class PagesController extends AppController {
 	public $name = 'Pages';
 	public $uses = array('Segment');
-	public $helpers = array('GoogleChart.GoogleChart');
+	public $helpers = array('GoogleCharts.GoogleCharts');
 
 	public function clear_cache($key = null) {
 		if ($key) {

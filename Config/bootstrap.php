@@ -135,7 +135,7 @@ Cache::config('default', array(
  */
 
 CakePlugin::load('DataCenter');
-CakePlugin::load('GoogleChart');
+CakePlugin::load('GoogleCharts');
 CakePlugin::load('DataImport');
 App::uses('AppExceptionHandler', 'Lib');
 

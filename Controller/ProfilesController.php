@@ -2,7 +2,7 @@
 App::uses('AppController', 'Controller');
 class ProfilesController extends AppController {
 	public $name = 'Profiles';
-	public $helpers = array('Html', 'Session', 'Text', 'GoogleChart.GoogleChart');
+	public $helpers = array('Html', 'Session', 'Text', 'GoogleCharts.GoogleCharts');
 	public $uses = array('County', 'Segment', 'Location');
 
 	public function beforeFilter() {

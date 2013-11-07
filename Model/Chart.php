@@ -1,6 +1,6 @@
 <?php
 App::uses('AppModel', 'Model');
-App::uses('GoogleChart', 'GoogleChart.Lib');
+App::uses('GoogleCharts', 'GoogleCharts.Lib');
 App::uses('DataCategory', 'Model');
 class Chart extends AppModel {
 	public $name = 'Chart';
@@ -53,7 +53,7 @@ class Chart extends AppModel {
 		
 		$this->options = array_merge($this->defaultOptions, $this->options);
 		
-		$chart = new GoogleChart(null, null, null, null, 'chart_'.$this->segment);
+		$chart = new GoogleCharts(null, null, null, null, 'chart_'.$this->segment);
 		$chart->type($this->type)
 		    ->options($this->options) 
 		    ->columns($this->columns)
