@@ -33,7 +33,10 @@ App::uses('Controller', 'Controller');
  */
 class AppController extends Controller {
 	public $helpers = array('Js' => array('Jquery'), 'Html', 'Text', 'Form');
-	public $components = array('DataCenter.Flash');
+	public $components = array(
+		'DebugKit.Toolbar',
+		'DataCenter.Flash'
+	);
 	
 	public function beforeRender() {
 		// Variables used in the sidebar
