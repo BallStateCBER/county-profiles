@@ -138,6 +138,8 @@ CakePlugin::load('DataCenter');
 CakePlugin::load('GoogleCharts');
 CakePlugin::load('DataImport');
 App::uses('AppExceptionHandler', 'Lib');
+CakePlugin::load('DebugKit');
+App::uses('FireCake','DebugKit.Lib');
 
 // Migration from 2.1 to 2.2
 // Enable the Dispatcher filters for plugin assets, and
