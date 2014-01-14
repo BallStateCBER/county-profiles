@@ -627,7 +627,8 @@ class Table extends AppModel {
 		$loc_key = "2,$county_id";
 		$date = $this->segmentParams['dates'][0];
 	    
-		$category_id = reset(array_keys($this->data));
+		$categories = array_keys($this->data);
+		$category_id = reset($categories);
 		$value = $this->data[$category_id][$loc_key][$date];
 		$this->rows[] = array(
 			'Transfer Payments', 

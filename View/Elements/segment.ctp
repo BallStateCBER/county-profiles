@@ -1,7 +1,8 @@
 <?php
 	$has_subsegments = ! empty($segment['subsegments']);
 	if ($has_subsegments) {
-		$first_subsegment = reset(array_keys($segment['subsegments']));
+		$subsegments = array_keys($segment['subsegments']);
+		$first_subsegment = reset($subsegments);
 	}
 	$has_toggled_subsegments = isset($segment['subsegments_display']) && $segment['subsegments_display'] == 'toggled';
 	

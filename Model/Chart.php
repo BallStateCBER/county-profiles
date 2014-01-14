@@ -685,7 +685,8 @@ class Chart extends AppModel {
 		$loc_key = "2,$county_id";
 		$date = $this->segmentParams['dates'][0];
 	    
-		$category_id = reset(array_keys($this->data));
+		$categories = array_keys($this->data);
+		$category_id = reset($categories);
 		$value = $this->data[$category_id][$loc_key][$date];
 		$this->rows[] = array(
 			'category' => 'Transfer Payments', 
@@ -1018,7 +1019,8 @@ class Chart extends AppModel {
 		$this->columns = array(
 	        'category' => array('label' => 'Category', 'type' => 'string')
 		);
-		$arbitrary_set = reset(array_values($this->structure['categories']));
+		$sets = array_values($this->structure['categories']);
+		$arbitrary_set = reset($sets);
 		$state_name = $this->getStateName();
 		foreach ($arbitrary_set as $category_id => $category_name) {
 			// This chart is only concerned with the "LQ against ____" values
