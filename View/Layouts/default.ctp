@@ -1,4 +1,4 @@
-<?php 
+<?php
 	$this->extend('DataCenter.default');
 	$this->assign('sidebar', $this->element('sidebar'));
 	$this->Html->script('script', array('inline' => false));
@@ -15,17 +15,18 @@
 		About County Profiles
 	</h3>
 	<p>
-		This site was created through a partnership between <a href="http://www.bsu.edu/bbc">Ball State's 
+		This site was created through a partnership between <a href="http://www.bsu.edu/bbc">Ball State's
 		Building Better Communities</a> and the Center for Business and Economic Research.
 	</p>
 	<p>
-		The <a href="http://www.cberdata.org/">CBER Data Center</a> is a product of the Center for Business 
-		and Economic Research at Ball State University.  CBER's mission is to conduct relevant and timely 
-		public policy research on a wide range of economic issues affecting the state and nation.  
+		The <a href="http://www.cberdata.org/">CBER Data Center</a> is a product of the Center for Business
+		and Economic Research at Ball State University.  CBER's mission is to conduct relevant and timely
+		public policy research on a wide range of economic issues affecting the state and nation.
 		<a href="http://www.bsu.edu/cber">Learn more</a>.
 	</p>
 <?php $this->end(); ?>
 
+<?php echo $this->element('flash_messages', array(), array('plugin' => 'DataCenter')); ?>
 <div id="content">
 	<?php echo $this->fetch('content'); ?>
 </div>
