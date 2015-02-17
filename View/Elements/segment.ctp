@@ -5,7 +5,7 @@
 		$first_subsegment = reset($subsegments);
 	}
 	$has_toggled_subsegments = isset($segment['subsegments_display']) && $segment['subsegments_display'] == 'toggled';
-	
+
 	// Populate $has['Chart'] and $has['Table'] to determine whether or not
 	// the Chart / Table toggler is appropriate
 	$has = array();
@@ -15,13 +15,11 @@
 			foreach ($segment['subsegments'] as $ss) {
 				if (! empty($ss[$output_type])) {
 					$has[$output_type] = true;
-					break;	
+					break;
 				}
 			}
 		}
 	}
-	
-	//echo '<pre>'.print_r($segment, true).'</pre>';
 ?>
 <section class="segment <?php if ($has_toggled_subsegments): ?>toggled_subsegments<?php endif; ?>" id="segment_<?php echo $segment['Segment']['name']; ?>">
 	<div class="description">
@@ -59,7 +57,7 @@
 				<span>Source</span>
 			</a>
 			<cite style="display: none;">
-				<?php 
+				<?php
 					foreach ($segment['sources'] as &$source) {
 						$source = $this->Text->autoLink($source);
 					}
@@ -114,7 +112,7 @@
 						<div id="subsegment_table_container_<?php echo $ss_name; ?>" <?php if ($ss_name != $first_subsegment): ?>style="display: none;"<?php endif; ?>>
 							<?php if ($subsegment['Table']): ?>
 								<?php echo $this->element('table', array(
-									'table' => $subsegment['Table'], 
+									'table' => $subsegment['Table'],
 									'table_id' => $ss_name
 								)); ?>
 							<?php endif; ?>
@@ -122,7 +120,7 @@
 					<?php endforeach; ?>
 				<?php elseif ($segment['Table']): ?>
 					<?php echo $this->element('table', array(
-						'table' => $segment['Table'], 
+						'table' => $segment['Table'],
 						'table_id' => $segment_name
 					)); ?>
 				<?php endif; ?>
