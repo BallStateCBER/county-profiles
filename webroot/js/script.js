@@ -10,33 +10,29 @@ function setupProfileSection(section) {
 	}
 	
 	// Set up chart / table toggler
-	var output_options = section.find('.output_options a');
-	if (output_options) {
-		output_options.each(function (i) {
-			$(this).click(function (event) {
-				event.preventDefault();
-				var chart_container = section.find('.data .chart_outer_container');
-				var table_container = section.find('.data .table_outer_container');
-				var link = $(this);
-				console.log(link);
-				if (link.hasClass('svg_toggler')) {
-					chart_container.show();
-					table_container.hide();
-					$(output_options[0]).addClass('selected');
-					$(output_options[1]).removeClass('selected');
-				} else if (link.hasClass('table_toggler')) {
-					chart_container.hide();
-					table_container.show();
-					$(output_options[0]).removeClass('selected');
-					$(output_options[1]).addClass('selected');
-					
-					// Display "scroll to see whole table" message if appropriate
-					var segment_name = section.attr('id').replace('segment_', '');
-					setupScrollingTableContainer(segment_name);
-				}
-			});
-		});
-	}
+	var output_options = section.find('.output_options');
+	output_options.find('a').click(function (event) {
+		event.preventDefault();
+		
+		var link = $(this);
+		output_options.find('a.selected').removeClass('selected');
+		link.addClass('selected');
+		
+		var chart_container = section.find('.data .chart_outer_container');
+		var table_container = section.find('.data .table_outer_container');
+		
+		if (link.hasClass('svg_toggler')) {
+			chart_container.show();
+			table_container.hide();
+		} else if (link.hasClass('table_toggler')) {
+			chart_container.hide();
+			table_container.show();
+			
+			// Display "scroll to see whole table" message if appropriate
+			var segment_name = section.attr('id').replace('segment_', '');
+			setupScrollingTableContainer(segment_name);
+		}
+	});
 	
 	// Set up subsegments
 	if (section.hasClass('toggled_subsegments')) {
