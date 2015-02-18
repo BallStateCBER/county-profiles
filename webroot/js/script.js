@@ -26,16 +26,13 @@ function setupProfileSection(section) {
 			table_container.hide();
 			chart_container.find('.png_chart').hide();
 			chart_container.find('.svg_chart').show();
-			
 		} else if (link.hasClass('png_toggler')) {
-			setupPngChart(chart_container);
-			
-			// Add the following as a callback to the above function, to be run after it completes
-			chart_container.show();
-			table_container.hide();
-			chart_container.find('.svg_chart').hide();
-			chart_container.find('.png_chart').show();
-			
+			showPngChart(chart_container, function () {
+				chart_container.show();
+				table_container.hide();
+				chart_container.find('.svg_chart').hide();
+				chart_container.find('.png_chart').show();
+			});
 		} else if (link.hasClass('table_toggler')) {
 			chart_container.hide();
 			table_container.show();
@@ -52,8 +49,9 @@ function setupProfileSection(section) {
 	}
 }
 
-function setupPngChart(chart_container) {
+function showPngChart(chart_container, callback) {
 	if (chart_container.find('.png_chart').length > 0) {
+		callback();
 		return;
 	}
 	
@@ -65,6 +63,7 @@ function setupPngChart(chart_container) {
 	var png_url = chart_obj.getImageURI();
 	var img = '<img src="'+png_url+'" alt="'+chart_obj_var_name+'" title="Right-click and select \'Save as...\' to download" />';
 	svg_container.after('<div class="png_chart" style="display: none;">'+img+'</div>');
+	callback();
 }
 
 function setupSubsegments(section) {
