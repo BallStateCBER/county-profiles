@@ -29,7 +29,7 @@
 	<tbody>
 		<?php foreach ($table['rows'] as $row): ?>
 			<tr>
-				<?php 
+				<?php
 					foreach ($row as $i => $cell) {
 						if ($i == 0) {
 							echo '<th>'.$cell.'</th>';
@@ -60,5 +60,5 @@
 
 <?php $this->Js->buffer("
 	$('#table_$table_id').tablesorter();
-	setupScrollingTableContainer('$table_id');
+	countyProfiles.setupScrollingTableContainer('$table_id');
 "); ?>
