@@ -1,99 +1,101 @@
-// Accepts a jQuery object
-function setupProfileSection(section) {
-	// Set up source toggler
-	var source_container = section.find('.source');
-	if (source_container) {
-		$(source_container).children('a').click(function (event) {
+var countyProfiles = {
+	// Accepts a jQuery object
+	setupProfileSection: function (section) {
+		// Set up source toggler
+		var source_container = section.find('.source');
+		if (source_container) {
+			$(source_container).children('a').click(function (event) {
+				event.preventDefault();
+				$(source_container).children('cite').toggle();
+			});
+		}
+		
+		// Set up chart / table toggler
+		var output_options = section.find('.output_options');
+		output_options.find('a').click(function (event) {
 			event.preventDefault();
-			$(source_container).children('cite').toggle();
-		});
-	}
-	
-	// Set up chart / table toggler
-	var output_options = section.find('.output_options');
-	output_options.find('a').click(function (event) {
-		event.preventDefault();
-		
-		var link = $(this);
-		output_options.find('a.selected').removeClass('selected');
-		link.addClass('selected');
-		
-		var chart_container = section.find('.data .chart_outer_container');
-		var table_container = section.find('.data .table_outer_container');
-		var svg_chart = chart_container.find('.svg_chart');
-		var png_chart = chart_container.find('.png_chart');
-		
-		// Show SVG chart
-		if (link.hasClass('svg_toggler')) {
-			if (png_chart.length > 0 && png_chart.is(':visible')) {
-				chart_container.fadeOut(200, function () {
+			
+			var link = $(this);
+			output_options.find('a.selected').removeClass('selected');
+			link.addClass('selected');
+			
+			var chart_container = section.find('.data .chart_outer_container');
+			var table_container = section.find('.data .table_outer_container');
+			var svg_chart = chart_container.find('.svg_chart');
+			var png_chart = chart_container.find('.png_chart');
+			
+			// Show SVG chart
+			if (link.hasClass('svg_toggler')) {
+				if (png_chart.length > 0 && png_chart.is(':visible')) {
+					chart_container.fadeOut(200, function () {
+						png_chart.hide();
+						svg_chart.show();
+						chart_container.fadeIn(200);
+					});
+				} else if (table_container.is(':visible')) {
 					png_chart.hide();
 					svg_chart.show();
-					chart_container.fadeIn(200);
-				});
-			} else if (table_container.is(':visible')) {
-				png_chart.hide();
-				svg_chart.show();
-				table_container.fadeOut(200, function () {
-					chart_container.fadeIn(200);
-				});
-			}
-		
-		// Show PNG chart
-		} else if (link.hasClass('png_toggler')) {
-			createPngChart(chart_container, function () {
-				var png_chart = chart_container.find('.png_chart');
-				if (table_container.is(':visible')) {
-					svg_chart.hide();
-					png_chart.show();
 					table_container.fadeOut(200, function () {
 						chart_container.fadeIn(200);
 					});
-				} else if (svg_chart.is(':visible')) {
-					svg_chart.fadeOut(200, function () {
-						png_chart.fadeIn(200);
+				}
+			
+			// Show PNG chart
+			} else if (link.hasClass('png_toggler')) {
+				countyProfiles.createPngChart(chart_container, function () {
+					var png_chart = chart_container.find('.png_chart');
+					if (table_container.is(':visible')) {
+						svg_chart.hide();
+						png_chart.show();
+						table_container.fadeOut(200, function () {
+							chart_container.fadeIn(200);
+						});
+					} else if (svg_chart.is(':visible')) {
+						svg_chart.fadeOut(200, function () {
+							png_chart.fadeIn(200);
+						});
+					}
+				});
+				
+			// Show table
+			} else if (link.hasClass('table_toggler')) {
+				if (chart_container.is(':visible')) {
+					chart_container.fadeOut(200, function () {
+						png_chart.hide();
+						svg_chart.hide();
+						table_container.fadeIn(200);
 					});
 				}
-			});
-			
-		// Show table
-		} else if (link.hasClass('table_toggler')) {
-			if (chart_container.is(':visible')) {
-				chart_container.fadeOut(200, function () {
-					png_chart.hide();
-					svg_chart.hide();
-					table_container.fadeIn(200);
-				});
+				
+				// Display "scroll to see whole table" message if appropriate
+				var segment_name = section.attr('id').replace('segment_', '');
+				setupScrollingTableContainer(segment_name);
 			}
-			
-			// Display "scroll to see whole table" message if appropriate
-			var segment_name = section.attr('id').replace('segment_', '');
-			setupScrollingTableContainer(segment_name);
+		});
+		
+		// Set up subsegments
+		if (section.hasClass('toggled_subsegments')) {
+			setupSubsegments(section);
 		}
-	});
+	},
 	
-	// Set up subsegments
-	if (section.hasClass('toggled_subsegments')) {
-		setupSubsegments(section);
-	}
-}
-
-function createPngChart(chart_container, callback) {
-	if (chart_container.find('.png_chart').length > 0) {
+	createPngChart: function (chart_container, callback) {
+		if (chart_container.find('.png_chart').length > 0) {
+			callback();
+			return;
+		}
+		
+		// Add delay if SVG chart is still loading
+		
+		var svg_container = chart_container.find('.svg_chart');
+		var chart_obj_var_name = svg_container.attr('id');
+		var chart_obj = window[chart_obj_var_name];
+		var png_url = chart_obj.getImageURI();
+		var img = '<img src="'+png_url+'" alt="'+chart_obj_var_name+'" title="Right-click and select \'Save as...\' to download" />';
+		svg_container.after('<div class="png_chart" style="display: none;">'+img+'</div>');
 		callback();
-		return;
 	}
-	
-	// Add delay if SVG chart is still loading
-	
-	var svg_container = chart_container.find('.svg_chart');
-	var chart_obj_var_name = svg_container.attr('id');
-	var chart_obj = window[chart_obj_var_name];
-	var png_url = chart_obj.getImageURI();
-	var img = '<img src="'+png_url+'" alt="'+chart_obj_var_name+'" title="Right-click and select \'Save as...\' to download" />';
-	svg_container.after('<div class="png_chart" style="display: none;">'+img+'</div>');
-	callback();
-}
+};
 
 function setupSubsegments(section) {
 	var subsegment_togglers = section.find('.subsegment_choices a');
