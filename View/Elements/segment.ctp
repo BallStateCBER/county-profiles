@@ -33,12 +33,12 @@
 			<div class="output_options">
 				<a class="selected with_icon svg_toggler" title="View SVG chart" href="#">
 					<img src="/data_center/img/icons/chart.png" />
-					<span>SVG Chart</span>
+					<span>Interactive Chart</span>
 				</a>
 				<br />
 				<a class="with_icon png_toggler" title="View PNG chart" href="#">
 					<img src="/data_center/img/icons/chart.png" />
-					<span>PNG Chart</span>
+					<span>Downloadable Chart</span>
 				</a>
 				<br />
 				<a class="with_icon table_toggler" title="View table" href="#">
