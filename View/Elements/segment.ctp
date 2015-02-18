@@ -31,12 +31,12 @@
 		</p>
 		<?php if ($has['Chart'] && $has['Table']): ?>
 			<div class="output_options">
-				<a class="selected with_icon" title="View chart" href="#">
+				<a class="selected with_icon svg_toggler" title="View chart" href="#">
 					<img src="/data_center/img/icons/chart.png" />
 					<span>Chart</span>
 				</a>
 				|
-				<a title="View table" href="#" class="with_icon">
+				<a class="with_icon table_toggler" title="View table" href="#">
 					<img src="/data_center/img/icons/table.png" />
 					<span>Table</span>
 				</a>
@@ -95,7 +95,7 @@
 						<div class="chart_loading">
 							<img src="/data_center/img/loading_small.gif" /> Loading chart...
 						</div>
-						<?php $this->GoogleCharts->createJsChart($segment['Chart']['chart']); ?>
+						<?php $this->GoogleCharts->createJsChart($segment['Chart']['chart'], $segment_name); ?>
 					</div>
 					<?php if ($segment['Chart']['footnote']): ?>
 						<p class="footnote">
