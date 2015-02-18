@@ -20,22 +20,51 @@ function setupProfileSection(section) {
 		
 		var chart_container = section.find('.data .chart_outer_container');
 		var table_container = section.find('.data .table_outer_container');
+		var svg_chart = chart_container.find('.svg_chart');
+		var png_chart = chart_container.find('.png_chart');
 		
+		// Show SVG chart
 		if (link.hasClass('svg_toggler')) {
-			chart_container.show();
-			table_container.hide();
-			chart_container.find('.png_chart').hide();
-			chart_container.find('.svg_chart').show();
+			if (png_chart.length > 0 && png_chart.is(':visible')) {
+				chart_container.fadeOut(200, function () {
+					png_chart.hide();
+					svg_chart.show();
+					chart_container.fadeIn(200);
+				});
+			} else if (table_container.is(':visible')) {
+				png_chart.hide();
+				svg_chart.show();
+				table_container.fadeOut(200, function () {
+					chart_container.fadeIn(200);
+				});
+			}
+		
+		// Show PNG chart
 		} else if (link.hasClass('png_toggler')) {
-			showPngChart(chart_container, function () {
-				chart_container.show();
-				table_container.hide();
-				chart_container.find('.svg_chart').hide();
-				chart_container.find('.png_chart').show();
+			createPngChart(chart_container, function () {
+				var png_chart = chart_container.find('.png_chart');
+				if (table_container.is(':visible')) {
+					svg_chart.hide();
+					png_chart.show();
+					table_container.fadeOut(200, function () {
+						chart_container.fadeIn(200);
+					});
+				} else if (svg_chart.is(':visible')) {
+					svg_chart.fadeOut(200, function () {
+						png_chart.fadeIn(200);
+					});
+				}
 			});
+			
+		// Show table
 		} else if (link.hasClass('table_toggler')) {
-			chart_container.hide();
-			table_container.show();
+			if (chart_container.is(':visible')) {
+				chart_container.fadeOut(200, function () {
+					png_chart.hide();
+					svg_chart.hide();
+					table_container.fadeIn(200);
+				});
+			}
 			
 			// Display "scroll to see whole table" message if appropriate
 			var segment_name = section.attr('id').replace('segment_', '');
@@ -49,7 +78,7 @@ function setupProfileSection(section) {
 	}
 }
 
-function showPngChart(chart_container, callback) {
+function createPngChart(chart_container, callback) {
 	if (chart_container.find('.png_chart').length > 0) {
 		callback();
 		return;
