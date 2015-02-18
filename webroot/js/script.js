@@ -24,6 +24,18 @@ function setupProfileSection(section) {
 		if (link.hasClass('svg_toggler')) {
 			chart_container.show();
 			table_container.hide();
+			chart_container.find('.png_chart').hide();
+			chart_container.find('.svg_chart').show();
+			
+		} else if (link.hasClass('png_toggler')) {
+			setupPngChart(chart_container);
+			
+			// Add the following as a callback to the above function, to be run after it completes
+			chart_container.show();
+			table_container.hide();
+			chart_container.find('.svg_chart').hide();
+			chart_container.find('.png_chart').show();
+			
 		} else if (link.hasClass('table_toggler')) {
 			chart_container.hide();
 			table_container.show();
@@ -38,6 +50,21 @@ function setupProfileSection(section) {
 	if (section.hasClass('toggled_subsegments')) {
 		setupSubsegments(section);
 	}
+}
+
+function setupPngChart(chart_container) {
+	if (chart_container.find('.png_chart').length > 0) {
+		return;
+	}
+	
+	// Add delay if SVG chart is still loading
+	
+	var svg_container = chart_container.find('.svg_chart');
+	var chart_obj_var_name = svg_container.attr('id');
+	var chart_obj = window[chart_obj_var_name];
+	var png_url = chart_obj.getImageURI();
+	var img = '<img src="'+png_url+'" alt="'+chart_obj_var_name+'" title="Right-click and select \'Save as...\' to download" />';
+	svg_container.after('<div class="png_chart" style="display: none;">'+img+'</div>');
 }
 
 function setupSubsegments(section) {

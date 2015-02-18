@@ -31,9 +31,14 @@
 		</p>
 		<?php if ($has['Chart'] && $has['Table']): ?>
 			<div class="output_options">
-				<a class="selected with_icon svg_toggler" title="View chart" href="#">
+				<a class="selected with_icon svg_toggler" title="View SVG chart" href="#">
 					<img src="/data_center/img/icons/chart.png" />
-					<span>Chart</span>
+					<span>SVG Chart</span>
+				</a>
+				|
+				<a class="with_icon png_toggler" title="View PNG chart" href="#">
+					<img src="/data_center/img/icons/chart.png" />
+					<span>PNG Chart</span>
 				</a>
 				|
 				<a class="with_icon table_toggler" title="View table" href="#">
@@ -77,7 +82,7 @@
 							the appropriate method of the Chart class.
 						 */ ?>
 						<div id="subsegment_chart_container_<?php echo $ss_name; ?>">
-							<div id="chart_<?php echo $ss_name; ?>">
+							<div id="chart_<?php echo $ss_name; ?>" class="svg_chart">
 								<div class="chart_loading">
 									<img src="/data_center/img/loading_small.gif" /> Loading chart...
 								</div>
@@ -91,7 +96,7 @@
 						</div>
 					<?php endforeach; ?>
 				<?php elseif (isset($segment['Chart'])): ?>
-					<div id="chart_<?php echo $segment_name; ?>">
+					<div id="chart_<?php echo $segment_name; ?>" class="svg_chart">
 						<div class="chart_loading">
 							<img src="/data_center/img/loading_small.gif" /> Loading chart...
 						</div>
