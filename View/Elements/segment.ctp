@@ -35,12 +35,12 @@
 					<img src="/data_center/img/icons/chart.png" />
 					<span>SVG Chart</span>
 				</a>
-				|
+				<br />
 				<a class="with_icon png_toggler" title="View PNG chart" href="#">
 					<img src="/data_center/img/icons/chart.png" />
 					<span>PNG Chart</span>
 				</a>
-				|
+				<br />
 				<a class="with_icon table_toggler" title="View table" href="#">
 					<img src="/data_center/img/icons/table.png" />
 					<span>Table</span>
