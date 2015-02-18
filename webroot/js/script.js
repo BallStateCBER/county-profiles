@@ -91,9 +91,14 @@ var countyProfiles = {
 			return;
 		}
 		
-		// Add delay if SVG chart is still loading
-		
 		var svg_container = chart_container.find('.svg_chart');
+		
+		// Wait a half-second and try again if SVG chart is still loading
+		if (svg_container.find('.chart_loading').length > 0) {
+			setTimeout(this.createPngChart(chart_container, callback), 500);
+			return;
+		}
+		
 		var chart_obj_var_name = svg_container.attr('id');
 		var chart_obj = window[chart_obj_var_name];
 		var png_url = chart_obj.getImageURI();
