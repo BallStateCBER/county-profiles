@@ -108,37 +108,24 @@ var countyProfiles = {
 	},
 	
 	setupSubsegments: function (section) {
-		var subsegment_togglers = section.find('.subsegment_choices a');
-		subsegment_togglers.each(function (i) {
-			var subsegment_name = $(this).data('ss-name');
-			$(this).click(function (event) {
-				event.preventDefault();
+		section.find('.subsegment_choices a').click(function (event) {
+			event.preventDefault();
 
-				// Highlight the clicked link
-				subsegment_togglers.removeClass('selected');
-				$(this).addClass('selected');
-				
-				// Show correct chart
-				section.find('.chart_outer_container > div').each(function (i) {
-					if (this.id == 'subsegment_chart_container_'+subsegment_name) {
-						$(this).show();
-					} else {
-						$(this).hide();
-					}
-				});
-				
-				// Show correct table
-				section.find('.table_outer_container > div').each(function (i) {
-					if (this.id == 'subsegment_table_container_'+subsegment_name) {
-						$(this).show();
-						
-						// Display "scroll to see whole table" message if appropriate
-						countyProfiles.setupScrollingTableContainer(subsegment_name);
-					} else {
-						$(this).hide();
-					}
-				});
-			});
+			// Highlight the clicked link
+			$(this).siblings().removeClass('selected');
+			$(this).addClass('selected');
+			
+			// Show correct chart
+			section.find('.chart_outer_container > div').hide();
+			var subsegment_name = $(this).data('ss-name');
+			$('#subsegment_chart_container_'+subsegment_name).show();
+			
+			// Show correct table
+			section.find('.table_outer_container > div').hide();
+			$('#subsegment_table_container_'+subsegment_name).show();
+					
+			// Display "scroll to see whole table" message if appropriate
+			countyProfiles.setupScrollingTableContainer(subsegment_name);
 		});
 	},
 	
