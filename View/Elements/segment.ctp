@@ -50,7 +50,7 @@
 		<?php if ($has_toggled_subsegments): ?>
 			<div class="subsegment_choices">
 				<?php foreach ($segment['subsegments'] as $ss_name => $subsegment): ?>
-					<a href="#" title="<?php echo $ss_name; ?>" class="<?php if ($ss_name == $first_subsegment): ?>selected<?php endif; ?>">
+					<a href="#" data-ss-name="<?php echo $ss_name; ?>" class="<?php if ($ss_name == $first_subsegment): ?>selected<?php endif; ?>">
 						<?php echo $subsegment['title']; ?>
 					</a>
 				<?php endforeach; ?>

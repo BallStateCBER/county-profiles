@@ -110,7 +110,7 @@ var countyProfiles = {
 	setupSubsegments: function (section) {
 		var subsegment_togglers = section.find('.subsegment_choices a');
 		subsegment_togglers.each(function (i) {
-			var subsegment_name = $(this).attr('title');
+			var subsegment_name = $(this).data('ss-name');
 			$(this).click(function (event) {
 				event.preventDefault();
 
