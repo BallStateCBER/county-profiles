@@ -99,11 +99,14 @@ var countyProfiles = {
 			return;
 		}
 		
-		var chart_obj_var_name = svg_container.attr('id');
-		var chart_obj = window[chart_obj_var_name];
-		var png_url = chart_obj.getImageURI();
-		var img = '<img src="'+png_url+'" alt="'+chart_obj_var_name+'" title="Right-click and select \'Save as...\' to download" />';
-		svg_container.after('<div class="png_chart" style="display: none;">'+img+'</div>');
+		svg_container.each(function () {
+			var individual_container = $(this);
+			var chart_obj_var_name = individual_container.attr('id');
+			var chart_obj = window[chart_obj_var_name];
+			var png_url = chart_obj.getImageURI();
+			var img = '<img src="'+png_url+'" alt="'+chart_obj_var_name+'" title="Right-click and select \'Save as...\' to download" />';
+			individual_container.after('<div class="png_chart" style="display: none;">'+img+'</div>');
+		});
 		callback();
 	},
 	
