@@ -115,20 +115,33 @@ var countyProfiles = {
 			event.preventDefault();
 
 			// Highlight the clicked link
-			$(this).siblings().removeClass('selected');
-			$(this).addClass('selected');
+			var link = $(this);
+			link.siblings().removeClass('selected');
+			link.addClass('selected');
 			
-			// Show correct chart
-			section.find('.chart_outer_container > div').hide();
-			var subsegment_name = $(this).data('ss-name');
-			$('#subsegment_chart_container_'+subsegment_name).show();
+			// Determine what should be shown
+			var output_mode_link = section.find('.output_options a.selected');
+			var target_output = output_mode_link.attr('title').search('table') > -1 ? 'table' : 'chart';
+			var subsegment_name = link.data('ss-name');
+			var chart_container_id = '#subsegment_chart_container_'+subsegment_name;
+			var table_container_id = '#subsegment_table_container_'+subsegment_name;
+			var specific_target = target_output == 'table' ? $(table_container_id) : $(chart_container_id);
 			
-			// Show correct table
-			section.find('.table_outer_container > div').hide();
-			$('#subsegment_table_container_'+subsegment_name).show();
-					
-			// Display "scroll to see whole table" message if appropriate
-			countyProfiles.setupScrollingTableContainer(subsegment_name);
+			// Exit if already showing the target
+			if (specific_target.is(':visible')) {
+				return;
+			}
+			
+			// Hide / show
+			var to_hide = section.find('.data > div > div');
+			to_hide = to_hide.filter(':not('+chart_container_id+')');
+			to_hide = to_hide.filter(':not('+table_container_id+')');
+			to_hide.fadeOut(200);
+			setTimeout(function () {
+				// This doesn't work as a callback to to_hide.fadeOut() for some reason.
+				// fadeOut() and fadeIn() end up both running at the same time
+				$(chart_container_id+', '+table_container_id).fadeIn(200);
+			}, 200);
 		});
 	},
 	
