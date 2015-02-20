@@ -121,7 +121,11 @@ var countyProfiles = {
 			
 			// Determine what should be shown
 			var output_mode_link = section.find('.output_options a.selected');
-			var target_output = output_mode_link.attr('title').search('table') > -1 ? 'table' : 'chart';
+			if (output_mode_link.length > 0) {
+				var target_output = output_mode_link.attr('title').search('table') > -1 ? 'table' : 'chart';
+			} else { // In the case of the Entrepreneurial Activities table
+				var target_output = 'table';
+			}
 			var subsegment_name = link.data('ss-name');
 			var chart_container_id = '#subsegment_chart_container_'+subsegment_name;
 			var table_container_id = '#subsegment_table_container_'+subsegment_name;
