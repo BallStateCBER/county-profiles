@@ -9,7 +9,7 @@
 				<?php if (is_file('img/photos/original_size/'.$photo['filename'])): ?>
 					<?php $use_shadowbox = true; ?>
 					<a href="/img/photos/original_size/<?php echo $photo['filename']; ?>" rel="shadowbox[photos]">
-						<img src="/img/photos/<?php echo $photo['filename']; ?>" />					
+						<img src="/img/photos/<?php echo $photo['filename']; ?>" />
 					</a>
 				<?php else: ?>
 					<img src="/img/photos/<?php echo $photo['filename']; ?>" />
@@ -27,7 +27,7 @@
 		</th>
 		<td>
 			<?php echo $this->Html->link(
-				$county['Seat']['name'], 
+				$county['Seat']['name'],
 				$county['Seat']['website']
 			); ?>
 		</td>
@@ -68,7 +68,17 @@
 			}
 			echo implode(', ', $sources);
 		?>
-	</p> 
+	</p>
+<?php endif; ?>
+
+<?php if (isset($county['County']['modified'])): ?>
+	<p class="updated">
+		This information was updated on
+		<?php
+			$timestamp = strtotime($county['County']['modified']);
+			echo date('F j, Y', $timestamp);
+		?>.
+	</p>
 <?php endif; ?>
 
 <?php if (! empty($county['City'])): ?>
@@ -112,9 +122,9 @@
 	</ul>
 <?php endif; ?>
 
-<?php 
+<?php
 	if (isset($use_shadowbox)) {
 		$this->Html->script('/shadowbox-3.0.3/shadowbox.js', array('inline' => false));
 		$this->Html->css('/shadowbox-3.0.3/shadowbox.css', null, array('inline' => false));
-		$this->Js->buffer('Shadowbox.init();');	
+		$this->Js->buffer('Shadowbox.init();');
 	}
