@@ -105,6 +105,9 @@ class AppController extends Controller {
 			$sidebar['current_county'] = $this->params['pass'][0];
 		}
 
+		$user_id = $this->Auth->user('id');
+		$sidebar['logged_in'] = ! empty($user_id);
+
 		$this->set(compact('sidebar'));
 	}
 

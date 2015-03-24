@@ -1,8 +1,8 @@
 <?php
 	if (isset($sidebar['current_county'])) {
 		echo $this->element('indiana', array(
-			'width' => 150, 
-			'height' => 228, 
+			'width' => 150,
+			'height' => 228,
 			'classes' => array('small')
 		));
 	}
@@ -52,8 +52,23 @@
 	<?php echo $this->Html->link('Glossary', array('plugin' => false, 'controller' => 'pages', 'action' => 'glossary')); ?>
 </h3>
 
+<?php if ($sidebar['logged_in']): ?>
+	<p>
+		<?php echo $this->Html->link(
+			'Log out',
+			array(
+				'admin' => false,
+				'controller' => 'users',
+				'action' => 'logout'
+			)
+		); ?>
+	</p>
+<?php endif; ?>
+
 <?php if (Configure::read('debug')): ?>
-	<?php echo $this->Html->link('Clear cache', array('controller' => 'pages', 'action' => 'clear_cache')); ?>
+	<p>
+		<?php echo $this->Html->link('Clear cache', array('controller' => 'pages', 'action' => 'clear_cache')); ?>
+	</p>
 <?php endif; ?>
 
 <?php
