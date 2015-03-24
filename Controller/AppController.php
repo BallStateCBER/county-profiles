@@ -90,6 +90,8 @@ class AppController extends Controller {
 				}
 			}
 		}
+
+		$this->Auth->allow();
 	}
 
 	public function beforeRender() {
