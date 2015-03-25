@@ -2,6 +2,7 @@
 App::uses('AppController', 'Controller');
 class CountiesController extends AppController {
 	public $name = 'Counties';
+	public $helpers = array('Tinymce');
 	public $components = array(
 		'Auth' => array(
 			'authenticate' => array(
