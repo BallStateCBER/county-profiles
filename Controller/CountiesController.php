@@ -2,6 +2,22 @@
 App::uses('AppController', 'Controller');
 class CountiesController extends AppController {
 	public $name = 'Counties';
+	public $components = array(
+		'Auth' => array(
+			'authenticate' => array(
+				'Form' => array(
+					'fields' => array(
+						'username' => 'email'
+					)
+				)
+			)
+		)
+	);
+
+	public function beforeFilter() {
+		parent::beforeFilter();
+		$this->Auth->deny('admin_index');
+	}
 
 	/* Correctly sets the 'slug' value for each county.
 	 * Assumes that each county name is used only once
@@ -140,6 +156,30 @@ class CountiesController extends AppController {
 		$this->set(array(
 			'title_for_layout' => 'Edit County Info',
 			'counties' => $counties
+		));
+	}
+
+	public function admin_edit($county_id = null) {
+		$this->County->id = $county_id;
+		if (! $this->County->exists()) {
+			throw new NotFoundException('Error: County not found.');
+		}
+
+		if ($this->request->is('post') || $this->request->is('put')) {
+			if ($this->County->save($this->request->data)) {
+				$this->Flash->success('County info updated');
+				$this->redirect(array(
+					'admin' => true,
+					'action' => 'index'
+				));
+			} else {
+				$this->Flash->error('There was an error updating that county info');
+			}
+		} else {
+			$this->request->data = $this->County->read();
+		}
+		$this->set(array(
+			'title_for_layout' => "Edit {$this->request->data['County']['name']} County Info"
 		));
 	}
 }
