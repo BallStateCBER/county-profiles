@@ -174,7 +174,6 @@ class CountiesController extends AppController {
 				foreach ($this->request->data['City'] as $i => $city) {
 					if ($city['name'] == '') {
 						if (isset($city['id'])) {
-							echo "would delete {$city['id']}<br />";
 							$this->County->City->id = $city['id'];
 							$this->County->City->delete();
 
