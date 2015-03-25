@@ -169,6 +169,10 @@ class CountiesController extends AppController {
 		if ($this->request->is('post') || $this->request->is('put')) {
 			if ($this->County->save($this->request->data)) {
 				$this->Flash->success('County info updated');
+
+				$slug = $this->County->field('slug');
+				Cache::delete("getCountyIntro($slug)");
+
 				$this->redirect(array(
 					'admin' => true,
 					'action' => 'index'
