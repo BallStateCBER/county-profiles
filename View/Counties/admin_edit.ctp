@@ -34,6 +34,9 @@
 	<thead>
 		<tr>
 			<th>
+				County Seat
+			</th>
+			<th>
 				Name
 			</th>
 			<th>
@@ -46,6 +49,18 @@
 	<tbody>
 		<?php foreach ($this->request->data['City'] as $i => $city): ?>
 			<tr>
+				<td>
+					<?php echo $this->Form->radio(
+						'county_seat_id',
+						array(
+							$city['id'] => null
+						),
+						array(
+							'label' => false,
+							'legend' => false
+						)
+					); ?>
+				</td>
 				<td>
 					<?php echo $this->Form->input(
 						"City.$i.id"
@@ -77,7 +92,7 @@
 	</tbody>
 	<tfoot>
 		<tr>
-			<td colspan="3">
+			<td colspan="4">
 				<a href="#" id="add_city" data-iterator="<?php echo count($this->request->data['City']); ?>">
 					Add new city or town
 				</a>
@@ -100,6 +115,7 @@
 
 		var i = $(this).data('iterator');
 		var new_row = $('<tr></tr>');
+		new_row.append('<td></td>');
 		new_row.append('<td><input type=\"text\" maxlength=\"100\" name=\"data[City]['+i+'][name]\"></td>');
 		new_row.append('<td><input type=\"text\" maxlength=\"200\" name=\"data[City]['+i+'][website]\"></td>');
 		new_row.append('<td><a href=\"#\" class=\"delete\">X</a></td>');

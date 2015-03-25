@@ -193,10 +193,10 @@ class CountiesController extends AppController {
 				$slug = $this->County->field('slug');
 				Cache::delete("getCountyIntro($slug)");
 
-				/* $this->redirect(array(
+				$this->redirect(array(
 					'admin' => true,
 					'action' => 'index'
-				)); */
+				));
 			} else {
 				$this->Flash->error('There was an error updating that county info');
 			}
