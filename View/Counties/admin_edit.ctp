@@ -6,8 +6,6 @@
 	echo $this->Form->create();
 	echo $this->Form->input('founded');
 	echo $this->Form->input('square_miles');
-
-	//echo $this->Form->input('description');
 	echo $this->Tinymce->input('County.description',
 		array(
 			'label' => 'Description'
