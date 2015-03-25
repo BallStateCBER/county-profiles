@@ -21,17 +21,19 @@
 <?php endif; ?>
 
 <table class="facts">
-	<tr>
-		<th>
-			County Seat:
-		</th>
-		<td>
-			<?php echo $this->Html->link(
-				$county['Seat']['name'],
-				$county['Seat']['website']
-			); ?>
-		</td>
-	</tr>
+	<?php if (isset($county['Seat']['name'])): ?>
+		<tr>
+			<th>
+				County Seat:
+			</th>
+			<td>
+				<?php echo $this->Html->link(
+					$county['Seat']['name'],
+					$county['Seat']['website']
+				); ?>
+			</td>
+		</tr>
+	<?php endif; ?>
 	<tr>
 		<th>
 			Founded:
