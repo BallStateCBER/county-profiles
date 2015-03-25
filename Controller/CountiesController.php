@@ -173,13 +173,15 @@ class CountiesController extends AppController {
 			if (! empty($this->request->data['City'])) {
 				foreach ($this->request->data['City'] as $i => $city) {
 					if ($city['name'] == '') {
-						$this->County->City->id = $city['id'];
-						$this->County->City->delete();
+						if (isset($city['id'])) {
+							echo "would delete {$city['id']}<br />";
+							$this->County->City->id = $city['id'];
+							$this->County->City->delete();
 
-						if ($city['id'] == $county_seat_id) {
-							$this->County->saveField('county_seat_id', null);
+							if ($city['id'] == $county_seat_id) {
+								$this->County->saveField('county_seat_id', null);
+							}
 						}
-
 						unset($this->request->data['City'][$i]);
 					}
 				}

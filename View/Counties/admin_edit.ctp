@@ -75,6 +75,15 @@
 			</tr>
 		<?php endforeach; ?>
 	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="3">
+				<a href="#" id="add_city" data-iterator="<?php echo count($this->request->data['City']); ?>">
+					Add new city or town
+				</a>
+			</td>
+		</tr>
+	</tfoot>
 </table>
 
 <?php echo $this->Form->end('Update'); ?>
@@ -85,5 +94,23 @@
 		var tr = $(this).closest('tr');
 		tr.find('input[type=text]').val('');
 		tr.hide();
+	});
+	$('#add_city').click(function (event) {
+		event.preventDefault();
+
+		var i = $(this).data('iterator');
+		var new_row = $('<tr></tr>');
+		new_row.append('<td><input type=\"text\" maxlength=\"100\" name=\"data[City]['+i+'][name]\"></td>');
+		new_row.append('<td><input type=\"text\" maxlength=\"200\" name=\"data[City]['+i+'][website]\"></td>');
+		new_row.append('<td><a href=\"#\" class=\"delete\">X</a></td>');
+		new_row.find('a.delete').click(function (event) {
+			event.preventDefault();
+			var tr = $(this).closest('tr');
+			tr.find('input[type=text]').val('');
+			tr.hide();
+		});
+
+		$('#edit_cities tbody').append(new_row);
+		$(this).data('iterator', ++i);
 	});
 "); ?>
