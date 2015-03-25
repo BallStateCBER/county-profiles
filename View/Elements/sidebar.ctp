@@ -20,6 +20,12 @@
 		'empty' => 'Select a county...'
 	));
 	echo $this->Form->end();
+	$url = Router::url(array(
+		'plugin' => false,
+		$this->params['prefix'] => false,
+		'controller' => 'profiles',
+		'action' => $tab
+	));
 	$this->Js->buffer("
 		$('#SidebarSelectCounty').change(function(event) {
 			$('#SidebarSelectCountyForm').submit();
@@ -28,7 +34,7 @@
 			event.preventDefault();
 			var county_slug = $('#SidebarSelectCounty').val();
 			if (county_slug != '') {
-				var url = '".Router::url(array('plugin' => false, $this->params['prefix'] => false, 'controller' => 'profiles', 'action' => $tab))."/'+county_slug;
+				var url = '$url/'+county_slug;
 				window.location = url;
 			}
 		});
@@ -43,13 +49,37 @@
 <?php endif; ?>
 
 <h3>
-	<?php echo $this->Html->link('Home', array('plugin' => false, $this->params['prefix'] => false, 'controller' => 'pages', 'action' => 'home')); ?>
+	<?php echo $this->Html->link(
+		'Home',
+		array(
+			'plugin' => false,
+			$this->params['prefix'] => false,
+			'controller' => 'pages',
+			'action' => 'home'
+		)
+	); ?>
 </h3>
 <h3>
-	<?php echo $this->Html->link('Economic Impact Calculator', array('plugin' => false, $this->params['prefix'] => false, 'controller' => 'calculators', 'action' => 'index')); ?>
+	<?php echo $this->Html->link(
+		'Economic Impact Calculator',
+		array(
+			'plugin' => false,
+			$this->params['prefix'] => false,
+			'controller' => 'calculators',
+			'action' => 'index'
+		)
+	); ?>
 </h3>
 <h3>
-	<?php echo $this->Html->link('Glossary', array('plugin' => false, $this->params['prefix'] => false, 'controller' => 'pages', 'action' => 'glossary')); ?>
+	<?php echo $this->Html->link(
+		'Glossary',
+		array(
+			'plugin' => false,
+			$this->params['prefix'] => false,
+			'controller' => 'pages',
+			'action' => 'glossary'
+		)
+	); ?>
 </h3>
 
 <?php if ($sidebar['logged_in']): ?>
@@ -76,7 +106,14 @@
 
 <?php if (Configure::read('debug')): ?>
 	<p>
-		<?php echo $this->Html->link('Clear cache', array($this->params['prefix'] => false, 'controller' => 'pages', 'action' => 'clear_cache')); ?>
+		<?php echo $this->Html->link(
+			'Clear cache',
+			array(
+				$this->params['prefix'] => false,
+				'controller' => 'pages',
+				'action' => 'clear_cache'
+			)
+		); ?>
 	</p>
 <?php endif; ?>
 
