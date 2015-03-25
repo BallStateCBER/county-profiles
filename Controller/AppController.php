@@ -71,6 +71,7 @@ class AppController extends Controller {
 		if (! $this->Auth->loggedIn() && $this->Cookie->read('remember_me_cookie')) {
 			$cookie = $this->Cookie->read('remember_me_cookie');
 			if (isset($cookie['email']) && isset($cookie['password'])) {
+				$this->loadModel('User');
 				$user = $this->User->find('first', array(
 					'conditions' => array(
 						'User.email' => $cookie['email'],
