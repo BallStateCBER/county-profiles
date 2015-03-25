@@ -4,6 +4,7 @@
 
 <?php
 	echo $this->Form->create();
+	echo $this->Form->input('id');
 	echo $this->Form->input('founded');
 	echo $this->Form->input('square_miles');
 	echo $this->Tinymce->input('County.description',
@@ -24,5 +25,65 @@
 			'convert_urls' => false
 		)
 	);
+?>
 
-	echo $this->Form->end('Update');
+<label>
+	Cities and Towns
+</label>
+<table id="edit_cities">
+	<thead>
+		<tr>
+			<th>
+				Name
+			</th>
+			<th>
+				Website
+			</th>
+			<th>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php foreach ($this->request->data['City'] as $i => $city): ?>
+			<tr>
+				<td>
+					<?php echo $this->Form->input(
+						"City.$i.id"
+					); ?>
+					<?php echo $this->Form->input(
+						"City.$i.name",
+						array(
+							'label' => false,
+							'div' => false
+						)
+					); ?>
+				</td>
+				<td>
+					<?php echo $this->Form->input(
+						"City.$i.website",
+						array(
+							'label' => false,
+							'div' => false
+						)
+					); ?>
+				</td>
+				<td>
+					<a href="#" class="delete">
+						X
+					</a>
+				</td>
+			</tr>
+		<?php endforeach; ?>
+	</tbody>
+</table>
+
+<?php echo $this->Form->end('Update'); ?>
+
+<?php $this->Js->buffer("
+	$('#edit_cities a.delete').click(function (event) {
+		event.preventDefault();
+		var tr = $(this).closest('tr');
+		tr.find('input[type=text]').val('');
+		tr.hide();
+	});
+"); ?>

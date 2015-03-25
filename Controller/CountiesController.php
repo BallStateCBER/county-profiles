@@ -167,24 +167,44 @@ class CountiesController extends AppController {
 		}
 
 		if ($this->request->is('post') || $this->request->is('put')) {
-			if ($this->County->save($this->request->data)) {
+			$county_seat_id = $this->County->field('county_seat_id');
+
+			// Delete cities
+			if (! empty($this->request->data['City'])) {
+				foreach ($this->request->data['City'] as $i => $city) {
+					if ($city['name'] == '') {
+						$this->County->City->id = $city['id'];
+						$this->County->City->delete();
+
+						if ($city['id'] == $county_seat_id) {
+							$this->County->saveField('county_seat_id', null);
+						}
+
+						unset($this->request->data['City'][$i]);
+					}
+				}
+			}
+
+			if ($this->County->saveAssociated($this->request->data)) {
 				$this->Flash->success('County info updated');
 
 				$slug = $this->County->field('slug');
 				Cache::delete("getCountyIntro($slug)");
 
-				$this->redirect(array(
+				/* $this->redirect(array(
 					'admin' => true,
 					'action' => 'index'
-				));
+				)); */
 			} else {
 				$this->Flash->error('There was an error updating that county info');
 			}
+			$county_name = $this->County->field('name');
 		} else {
 			$this->request->data = $this->County->read();
+			$county_name = $this->request->data['County']['name'];
 		}
 		$this->set(array(
-			'title_for_layout' => "Edit {$this->request->data['County']['name']} County Info"
+			'title_for_layout' => "Edit $county_name County Info"
 		));
 	}
 }
