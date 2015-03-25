@@ -4,7 +4,6 @@ class County extends AppModel {
 	public $name = 'County';
 	public $actsAs = array('Containable');
 	public $hasMany = array(
-		'Seat',
 		'City' => array(
 			'order' => 'name'
 		),
