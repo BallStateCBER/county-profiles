@@ -50,9 +50,14 @@
 	</tr>
 </table>
 
-<p>
-	<?php echo nl2br(trim($county['County']['description'])); ?>
-</p>
+<?php
+	$description = nl2br(trim($county['County']['description']));
+	if (stripos($description, '<p>') === false) {
+		echo "<p>$description</p>";
+	} else {
+		echo $description;
+	}
+?>
 
 <?php if (! empty($county['CountyDescriptionSource'])): ?>
 	<p class="sources">
