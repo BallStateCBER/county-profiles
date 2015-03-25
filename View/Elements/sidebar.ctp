@@ -28,7 +28,7 @@
 			event.preventDefault();
 			var county_slug = $('#SidebarSelectCounty').val();
 			if (county_slug != '') {
-				var url = '".Router::url(array('plugin' => false, 'controller' => 'profiles', 'action' => $tab))."/'+county_slug;
+				var url = '".Router::url(array('plugin' => false, $this->params['prefix'] => false, 'controller' => 'profiles', 'action' => $tab))."/'+county_slug;
 				window.location = url;
 			}
 		});
@@ -43,13 +43,13 @@
 <?php endif; ?>
 
 <h3>
-	<?php echo $this->Html->link('Home', array('plugin' => false, 'controller' => 'pages', 'action' => 'home')); ?>
+	<?php echo $this->Html->link('Home', array('plugin' => false, $this->params['prefix'] => false, 'controller' => 'pages', 'action' => 'home')); ?>
 </h3>
 <h3>
-	<?php echo $this->Html->link('Economic Impact Calculator', array('plugin' => false, 'controller' => 'calculators', 'action' => 'index')); ?>
+	<?php echo $this->Html->link('Economic Impact Calculator', array('plugin' => false, $this->params['prefix'] => false, 'controller' => 'calculators', 'action' => 'index')); ?>
 </h3>
 <h3>
-	<?php echo $this->Html->link('Glossary', array('plugin' => false, 'controller' => 'pages', 'action' => 'glossary')); ?>
+	<?php echo $this->Html->link('Glossary', array('plugin' => false, $this->params['prefix'] => false, 'controller' => 'pages', 'action' => 'glossary')); ?>
 </h3>
 
 <?php if ($sidebar['logged_in']): ?>
@@ -66,7 +66,7 @@
 		<?php echo $this->Html->link(
 			'Log out',
 			array(
-				'admin' => false,
+				 $this->params['prefix'] => false,
 				'controller' => 'users',
 				'action' => 'logout'
 			)
@@ -76,7 +76,7 @@
 
 <?php if (Configure::read('debug')): ?>
 	<p>
-		<?php echo $this->Html->link('Clear cache', array('controller' => 'pages', 'action' => 'clear_cache')); ?>
+		<?php echo $this->Html->link('Clear cache', array($this->params['prefix'] => false, 'controller' => 'pages', 'action' => 'clear_cache')); ?>
 	</p>
 <?php endif; ?>
 
