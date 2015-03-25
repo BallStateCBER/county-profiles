@@ -55,6 +55,15 @@
 <?php if ($sidebar['logged_in']): ?>
 	<p>
 		<?php echo $this->Html->link(
+			'Edit County Info',
+			array(
+				'admin' => true,
+				'controller' => 'counties',
+				'action' => 'index'
+			)
+		); ?>
+		<br />
+		<?php echo $this->Html->link(
 			'Log out',
 			array(
 				'admin' => false,
