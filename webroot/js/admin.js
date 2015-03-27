@@ -165,9 +165,7 @@ var countyEditForm = {
 	init: function () {
 		$('#CountyAdminEditForm a.delete').click(function (event) {
 			event.preventDefault();
-			var tr = $(this).closest('tr');
-			tr.find('input[type=text]').val('');
-			tr.hide();
+			countyEditForm.deleteRow($(this));
 		});
 		$('#add_city').click(function (event) {
 			event.preventDefault();
@@ -180,9 +178,7 @@ var countyEditForm = {
 			new_row.append('<td><a href=\"#\" class=\"delete\">X</a></td>');
 			new_row.find('a.delete').click(function (event) {
 				event.preventDefault();
-				var tr = $(this).closest('tr');
-				tr.find('input[type=text]').val('');
-				tr.hide();
+				countyEditForm.deleteRow($(this));
 			});
 
 			$('#edit_cities tbody').append(new_row);
@@ -198,9 +194,7 @@ var countyEditForm = {
 			new_row.append('<td><a href=\"#\" class=\"delete\">X</a></td>');
 			new_row.find('a.delete').click(function (event) {
 				event.preventDefault();
-				var tr = $(this).closest('tr');
-				tr.find('input[type=text]').val('');
-				tr.hide();
+				countyEditForm.deleteRow($(this));
 			});
 
 			$('#edit_description_sources tbody').append(new_row);
@@ -216,13 +210,16 @@ var countyEditForm = {
 			new_row.append('<td><a href=\"#\" class=\"delete\">X</a></td>');
 			new_row.find('a.delete').click(function (event) {
 				event.preventDefault();
-				var tr = $(this).closest('tr');
-				tr.find('input[type=text]').val('');
-				tr.hide();
+				countyEditForm.deleteRow($(this));
 			});
 
 			$('#edit_townships tbody').append(new_row);
 			$(this).data('iterator', ++i);
 		});
+	},
+	deleteRow: function (link) {
+		var tr = link.closest('tr');
+		tr.find('input[type=text]').val('');
+		tr.hide();
 	}
 };
