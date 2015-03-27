@@ -160,10 +160,69 @@
 	</tfoot>
 </table>
 
+<label>
+	Townships
+</label>
+<table id="edit_townships">
+	<thead>
+		<tr>
+			<th>
+				Name
+			</th>
+			<th>
+				Website
+			</th>
+			<th>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php foreach ($this->request->data['Township'] as $i => $city): ?>
+			<tr>
+				<td>
+					<?php echo $this->Form->input(
+						"Township.$i.id"
+					); ?>
+					<?php echo $this->Form->input(
+						"Township.$i.name",
+						array(
+							'label' => false,
+							'div' => false
+						)
+					); ?>
+				</td>
+				<td>
+					<?php echo $this->Form->input(
+						"Township.$i.website",
+						array(
+							'label' => false,
+							'div' => false
+						)
+					); ?>
+				</td>
+				<td>
+					<a href="#" class="delete">
+						X
+					</a>
+				</td>
+			</tr>
+		<?php endforeach; ?>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="4">
+				<a href="#" id="add_township" data-iterator="<?php echo count($this->request->data['Township']); ?>">
+					Add new township
+				</a>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
 <?php echo $this->Form->end('Update'); ?>
 
 <?php $this->Js->buffer("
-	$('#edit_cities a.delete, #edit_description_sources a.delete').click(function (event) {
+	$('#CountyAdminEditForm a.delete').click(function (event) {
 		event.preventDefault();
 		var tr = $(this).closest('tr');
 		tr.find('input[type=text]').val('');
@@ -204,6 +263,24 @@
 		});
 
 		$('#edit_description_sources tbody').append(new_row);
+		$(this).data('iterator', ++i);
+	});
+	$('#add_township').click(function (event) {
+		event.preventDefault();
+
+		var i = $(this).data('iterator');
+		var new_row = $('<tr></tr>');
+		new_row.append('<td><input type=\"text\" maxlength=\"100\" name=\"data[Township]['+i+'][name]\"></td>');
+		new_row.append('<td><input type=\"text\" maxlength=\"200\" name=\"data[Township]['+i+'][website]\"></td>');
+		new_row.append('<td><a href=\"#\" class=\"delete\">X</a></td>');
+		new_row.find('a.delete').click(function (event) {
+			event.preventDefault();
+			var tr = $(this).closest('tr');
+			tr.find('input[type=text]').val('');
+			tr.hide();
+		});
+
+		$('#edit_townships tbody').append(new_row);
 		$(this).data('iterator', ++i);
 	});
 "); ?>

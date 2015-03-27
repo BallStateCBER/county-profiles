@@ -205,6 +205,19 @@ class CountiesController extends AppController {
 				}
 			}
 
+			// Delete townships
+			if (! empty($this->request->data['Township'])) {
+				foreach ($this->request->data['Township'] as $i => $township) {
+					if ($township['name'] == '') {
+						if (isset($township['id'])) {
+							$this->County->Township->id = $township['id'];
+							$this->County->Township->delete();
+						}
+						unset($this->request->data['Township'][$i]);
+					}
+				}
+			}
+
 			if ($this->County->saveAssociated($this->request->data)) {
 				$this->Flash->success('County info updated');
 
