@@ -28,6 +28,65 @@
 ?>
 
 <label>
+	Description Sources
+</label>
+<table id="edit_description_sources">
+	<thead>
+		<tr>
+			<th>
+				Name
+			</th>
+			<th>
+				Website
+			</th>
+			<th>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php foreach ($this->request->data['CountyDescriptionSource'] as $i => $source): ?>
+			<tr>
+				<td>
+					<?php echo $this->Form->input(
+						"CountyDescriptionSource.$i.id"
+					); ?>
+					<?php echo $this->Form->input(
+						"CountyDescriptionSource.$i.title",
+						array(
+							'label' => false,
+							'div' => false
+						)
+					); ?>
+				</td>
+				<td>
+					<?php echo $this->Form->input(
+						"CountyDescriptionSource.$i.url",
+						array(
+							'label' => false,
+							'div' => false
+						)
+					); ?>
+				</td>
+				<td>
+					<a href="#" class="delete">
+						X
+					</a>
+				</td>
+			</tr>
+		<?php endforeach; ?>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="3">
+				<a href="#" id="add_source" data-iterator="<?php echo count($this->request->data['CountyDescriptionSource']); ?>">
+					Add new source
+				</a>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
+<label>
 	Cities and Towns
 </label>
 <table id="edit_cities">
@@ -104,7 +163,7 @@
 <?php echo $this->Form->end('Update'); ?>
 
 <?php $this->Js->buffer("
-	$('#edit_cities a.delete').click(function (event) {
+	$('#edit_cities a.delete, #edit_description_sources a.delete').click(function (event) {
 		event.preventDefault();
 		var tr = $(this).closest('tr');
 		tr.find('input[type=text]').val('');
@@ -127,6 +186,24 @@
 		});
 
 		$('#edit_cities tbody').append(new_row);
+		$(this).data('iterator', ++i);
+	});
+	$('#add_source').click(function (event) {
+		event.preventDefault();
+
+		var i = $(this).data('iterator');
+		var new_row = $('<tr></tr>');
+		new_row.append('<td><input type=\"text\" maxlength=\"100\" name=\"data[CountyDescriptionSource]['+i+'][title]\"></td>');
+		new_row.append('<td><input type=\"text\" maxlength=\"200\" name=\"data[CountyDescriptionSource]['+i+'][url]\"></td>');
+		new_row.append('<td><a href=\"#\" class=\"delete\">X</a></td>');
+		new_row.find('a.delete').click(function (event) {
+			event.preventDefault();
+			var tr = $(this).closest('tr');
+			tr.find('input[type=text]').val('');
+			tr.hide();
+		});
+
+		$('#edit_description_sources tbody').append(new_row);
 		$(this).data('iterator', ++i);
 	});
 "); ?>

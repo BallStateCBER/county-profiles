@@ -192,6 +192,19 @@ class CountiesController extends AppController {
 				}
 			}
 
+			// Delete sources
+			if (! empty($this->request->data['CountyDescriptionSource'])) {
+				foreach ($this->request->data['CountyDescriptionSource'] as $i => $source) {
+					if ($source['title'] == '') {
+						if (isset($source['id'])) {
+							$this->County->CountyDescriptionSource->id = $source['id'];
+							$this->County->CountyDescriptionSource->delete();
+						}
+						unset($this->request->data['CountyDescriptionSource'][$i]);
+					}
+				}
+			}
+
 			if ($this->County->saveAssociated($this->request->data)) {
 				$this->Flash->success('County info updated');
 
