@@ -17,7 +17,7 @@ class CountiesController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->deny('admin_index');
+		$this->Auth->deny('admin_index', 'admin_edit');
 	}
 
 	/* Correctly sets the 'slug' value for each county.
