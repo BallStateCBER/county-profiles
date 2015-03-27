@@ -79,7 +79,7 @@
 		<tr>
 			<td colspan="3">
 				<a href="#" id="add_source" data-iterator="<?php echo count($this->request->data['CountyDescriptionSource']); ?>">
-					Add new source
+					Add source
 				</a>
 			</td>
 		</tr>
@@ -153,7 +153,7 @@
 		<tr>
 			<td colspan="4">
 				<a href="#" id="add_city" data-iterator="<?php echo count($this->request->data['City']); ?>">
-					Add new city or town
+					Add city or town
 				</a>
 			</td>
 		</tr>
@@ -177,7 +177,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<?php foreach ($this->request->data['Township'] as $i => $city): ?>
+		<?php foreach ($this->request->data['Township'] as $i => $township): ?>
 			<tr>
 				<td>
 					<?php echo $this->Form->input(
@@ -212,7 +212,66 @@
 		<tr>
 			<td colspan="4">
 				<a href="#" id="add_township" data-iterator="<?php echo count($this->request->data['Township']); ?>">
-					Add new township
+					Add township
+				</a>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
+<label>
+	Websites
+</label>
+<table id="edit_websites">
+	<thead>
+		<tr>
+			<th>
+				Title
+			</th>
+			<th>
+				Website
+			</th>
+			<th>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php foreach ($this->request->data['CountyWebsite'] as $i => $site): ?>
+			<tr>
+				<td>
+					<?php echo $this->Form->input(
+						"CountyWebsite.$i.id"
+					); ?>
+					<?php echo $this->Form->input(
+						"CountyWebsite.$i.title",
+						array(
+							'label' => false,
+							'div' => false
+						)
+					); ?>
+				</td>
+				<td>
+					<?php echo $this->Form->input(
+						"CountyWebsite.$i.url",
+						array(
+							'label' => false,
+							'div' => false
+						)
+					); ?>
+				</td>
+				<td>
+					<a href="#" class="delete">
+						X
+					</a>
+				</td>
+			</tr>
+		<?php endforeach; ?>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="4">
+				<a href="#" id="add_website" data-iterator="<?php echo count($this->request->data['CountyWebsite']); ?>">
+					Add website
 				</a>
 			</td>
 		</tr>

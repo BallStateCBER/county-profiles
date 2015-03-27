@@ -218,6 +218,19 @@ class CountiesController extends AppController {
 				}
 			}
 
+			// Delete websites
+			if (! empty($this->request->data['CountyWebsite'])) {
+				foreach ($this->request->data['CountyWebsite'] as $i => $site) {
+					if ($site['title'] == '') {
+						if (isset($site['id'])) {
+							$this->County->CountyWebsite->id = $site['id'];
+							$this->County->CountyWebsite->delete();
+						}
+						unset($this->request->data['CountyWebsite'][$i]);
+					}
+				}
+			}
+
 			if ($this->County->saveAssociated($this->request->data)) {
 				$this->Flash->success('County info updated');
 
