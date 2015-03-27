@@ -5,7 +5,7 @@ class UsersController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow();
+		$this->Auth->deny('admin_add');
 	}
 
 	public function login() {
