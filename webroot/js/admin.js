@@ -169,57 +169,60 @@ var countyEditForm = {
 		});
 		$('#add_city').click(function (event) {
 			event.preventDefault();
-
-			var i = $(this).data('iterator');
-			var new_row = $('<tr></tr>');
-			new_row.append('<td></td>');
-			new_row.append('<td><input type=\"text\" maxlength=\"100\" name=\"data[City]['+i+'][name]\"></td>');
-			new_row.append('<td><input type=\"text\" maxlength=\"200\" name=\"data[City]['+i+'][website]\"></td>');
-			new_row.append('<td><a href=\"#\" class=\"delete\">X</a></td>');
-			new_row.find('a.delete').click(function (event) {
-				event.preventDefault();
-				countyEditForm.deleteRow($(this));
-			});
-
-			$('#edit_cities tbody').append(new_row);
-			$(this).data('iterator', ++i);
+			countyEditForm.addNewCity($(this));
 		});
 		$('#add_source').click(function (event) {
 			event.preventDefault();
-
-			var i = $(this).data('iterator');
-			var new_row = $('<tr></tr>');
-			new_row.append('<td><input type=\"text\" maxlength=\"200\" name=\"data[CountyDescriptionSource]['+i+'][title]\"></td>');
-			new_row.append('<td><input type=\"text\" maxlength=\"200\" name=\"data[CountyDescriptionSource]['+i+'][url]\"></td>');
-			new_row.append('<td><a href=\"#\" class=\"delete\">X</a></td>');
-			new_row.find('a.delete').click(function (event) {
-				event.preventDefault();
-				countyEditForm.deleteRow($(this));
-			});
-
-			$('#edit_description_sources tbody').append(new_row);
-			$(this).data('iterator', ++i);
+			countyEditForm.addNewSource($(this));
 		});
 		$('#add_township').click(function (event) {
 			event.preventDefault();
-
-			var i = $(this).data('iterator');
-			var new_row = $('<tr></tr>');
-			new_row.append('<td><input type=\"text\" maxlength=\"50\" name=\"data[Township]['+i+'][name]\"></td>');
-			new_row.append('<td><input type=\"text\" maxlength=\"200\" name=\"data[Township]['+i+'][website]\"></td>');
-			new_row.append('<td><a href=\"#\" class=\"delete\">X</a></td>');
-			new_row.find('a.delete').click(function (event) {
-				event.preventDefault();
-				countyEditForm.deleteRow($(this));
-			});
-
-			$('#edit_townships tbody').append(new_row);
-			$(this).data('iterator', ++i);
+			countyEditForm.addNewTownship($(this));
 		});
 	},
 	deleteRow: function (link) {
 		var tr = link.closest('tr');
 		tr.find('input[type=text]').val('');
 		tr.hide();
+	},
+	addNewTownship: function (link) {
+		var i = link.data('iterator');
+		var new_row = $('<tr></tr>');
+		new_row.append('<td><input type=\"text\" maxlength=\"50\" name=\"data[Township]['+i+'][name]\"></td>');
+		new_row.append('<td><input type=\"text\" maxlength=\"200\" name=\"data[Township]['+i+'][website]\"></td>');
+		new_row.append('<td><a href=\"#\" class=\"delete\">X</a></td>');
+		new_row.find('a.delete').click(function (event) {
+			event.preventDefault();
+			countyEditForm.deleteRow($(this));
+		});
+		$('#edit_townships tbody').append(new_row);
+		link.data('iterator', ++i);
+	},
+	addNewCity: function (link) {
+		var i = link.data('iterator');
+		var new_row = $('<tr></tr>');
+		new_row.append('<td></td>');
+		new_row.append('<td><input type=\"text\" maxlength=\"100\" name=\"data[City]['+i+'][name]\"></td>');
+		new_row.append('<td><input type=\"text\" maxlength=\"200\" name=\"data[City]['+i+'][website]\"></td>');
+		new_row.append('<td><a href=\"#\" class=\"delete\">X</a></td>');
+		new_row.find('a.delete').click(function (event) {
+			event.preventDefault();
+			countyEditForm.deleteRow($(this));
+		});
+		$('#edit_cities tbody').append(new_row);
+		link.data('iterator', ++i);
+	},
+	addNewSource: function (link) {
+		var i = link.data('iterator');
+		var new_row = $('<tr></tr>');
+		new_row.append('<td><input type=\"text\" maxlength=\"200\" name=\"data[CountyDescriptionSource]['+i+'][title]\"></td>');
+		new_row.append('<td><input type=\"text\" maxlength=\"200\" name=\"data[CountyDescriptionSource]['+i+'][url]\"></td>');
+		new_row.append('<td><a href=\"#\" class=\"delete\">X</a></td>');
+		new_row.find('a.delete').click(function (event) {
+			event.preventDefault();
+			countyEditForm.deleteRow($(this));
+		});
+		$('#edit_description_sources tbody').append(new_row);
+		link.data('iterator', ++i);
 	}
 };
