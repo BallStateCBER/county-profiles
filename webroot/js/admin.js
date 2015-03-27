@@ -189,7 +189,7 @@ var countyEditForm = {
 
 			var i = $(this).data('iterator');
 			var new_row = $('<tr></tr>');
-			new_row.append('<td><input type=\"text\" maxlength=\"100\" name=\"data[CountyDescriptionSource]['+i+'][title]\"></td>');
+			new_row.append('<td><input type=\"text\" maxlength=\"200\" name=\"data[CountyDescriptionSource]['+i+'][title]\"></td>');
 			new_row.append('<td><input type=\"text\" maxlength=\"200\" name=\"data[CountyDescriptionSource]['+i+'][url]\"></td>');
 			new_row.append('<td><a href=\"#\" class=\"delete\">X</a></td>');
 			new_row.find('a.delete').click(function (event) {
@@ -205,7 +205,7 @@ var countyEditForm = {
 
 			var i = $(this).data('iterator');
 			var new_row = $('<tr></tr>');
-			new_row.append('<td><input type=\"text\" maxlength=\"100\" name=\"data[Township]['+i+'][name]\"></td>');
+			new_row.append('<td><input type=\"text\" maxlength=\"50\" name=\"data[Township]['+i+'][name]\"></td>');
 			new_row.append('<td><input type=\"text\" maxlength=\"200\" name=\"data[Township]['+i+'][website]\"></td>');
 			new_row.append('<td><a href=\"#\" class=\"delete\">X</a></td>');
 			new_row.find('a.delete').click(function (event) {
