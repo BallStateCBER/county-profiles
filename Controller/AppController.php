@@ -39,6 +39,7 @@ class AppController extends Controller {
 		'Cookie',
 		'Auth' => array(
 			'loginAction' => array(
+				'admin' => false,
 				'controller' => 'users',
 				'action' => 'login'
 			),
