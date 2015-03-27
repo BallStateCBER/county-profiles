@@ -147,8 +147,14 @@ class CountiesController extends AppController {
 
 	public function admin_index() {
 		$counties = $this->County->find(
-			'list',
+			'all',
 			array(
+				'contain' => false,
+				'fields' => array(
+					'County.id',
+					'County.name',
+					'County.modified'
+				),
 				'order' => array(
 					'County.name' => 'asc'
 				)
