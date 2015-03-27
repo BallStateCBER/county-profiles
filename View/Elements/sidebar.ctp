@@ -94,6 +94,15 @@
 		); ?>
 		<br />
 		<?php echo $this->Html->link(
+			'Add user',
+			array(
+				'admin' => true,
+				'controller' => 'users',
+				'action' => 'add'
+			)
+		); ?>
+		<br />
+		<?php echo $this->Html->link(
 			'Log out',
 			array(
 				 $this->params['prefix'] => false,
