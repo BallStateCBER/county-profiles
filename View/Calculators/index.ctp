@@ -26,7 +26,7 @@
 					</select>
 				</td>
 			</tr>
-		
+
 			<tr>
 				<th>Choose input method</th>
 				<td>
@@ -37,17 +37,17 @@
 					</select>
 				</td>
 			</tr>
-		
+
 			<tr id="option_a_input" style="display: none;">
 				<th>Annual production (sales, in dollars):</th>
 				<td>
 					<input type="text" name="annual_production" id="calc_annual_production" />
 				</td>
 			</tr>
-			
+
 			<tr id="option_b_input" style="display: none;">
-				<th>		
-					<img src="/data_center/img/icons/question.png" id="calc_employees_calc_help_toggler" class="calc_help_toggler" />
+				<th>
+					<img src="/data_center/img/icons/question.png" id="calc_employees_help_toggler" class="calc_help_toggler" />
 					Annual number of employees (not FTEs):
 					<div id="calc_employees_help" class="calc_help_text" style="display: none;">
 						FTE: Full-time equivalents<br />
@@ -58,7 +58,7 @@
 					<input type="text" name="employees" id="calc_employees" />
 				</td>
 			</tr>
-		
+
 			<tr>
 				<th></th>
 				<td id="calculate_button_container">
