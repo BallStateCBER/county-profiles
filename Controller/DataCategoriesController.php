@@ -169,7 +169,10 @@ class DataCategoriesController extends AppController {
 				}
 			}
 		}
-		$this->redirect('/data_categories');
+		$this->redirect(array(
+		    'prefix' => 'admin'
+		    'action' => 'index'
+        ));
 	}
 
 	public function auto_complete() {
