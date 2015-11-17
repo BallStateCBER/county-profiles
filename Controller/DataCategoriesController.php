@@ -73,7 +73,7 @@ class DataCategoriesController extends AppController {
 	    // send the nodes to our view
 	    $this->set(compact('nodes', 'showNoData'));
 
-	    $this->layout = 'ajax';
+	    $this->layout = 'json';
 	}
 
 	public function reorder() {
