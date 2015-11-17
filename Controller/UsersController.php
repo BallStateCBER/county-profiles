@@ -16,7 +16,7 @@ class UsersController extends AppController {
 				$this->Cookie->write('remember_me_cookie', $this->request->data['User'], true, '10 years');
 				$this->redirect($this->Auth->redirectUrl());
 			} else {
-				$this->set('password_error', 'Password incorrect.');
+				$this->Flash->error('Password incorrect.');
 			}
 		}
 
