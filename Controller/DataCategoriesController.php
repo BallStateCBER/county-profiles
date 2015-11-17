@@ -197,7 +197,7 @@ class DataCategoriesController extends AppController {
 			$categories[] = "{$result[0]['name']} ({$result[0]['id']})";
 		}
 		$this->set(compact('categories'));
-		$this->layout = 'ajax';
+		$this->layout = 'json';
 	}
 
 	public function trace_category($id) {
@@ -267,6 +267,6 @@ class DataCategoriesController extends AppController {
 			$name = "Error: Category does not exist";
 		}
 		$this->set(compact('name'));
-		$this->layout = 'ajax';
+		$this->layout = 'json';
 	}
 }
