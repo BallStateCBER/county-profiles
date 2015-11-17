@@ -3,13 +3,10 @@ App::uses('AppController', 'Controller');
 class DataCategoriesController extends AppController {
 	public $name = 'DataCategories';
 	public $uses = array('DataCategory', 'Datum');
-	
+
 	public function beforeFilter() {
-		if (! Configure::read('debug')) {
-			$this->Flash->error('Sorry, the site has to be in debug mode to access that.');
-			$this->redirect('/');
-		}
 		parent::beforeFilter();
+        $this->Auth->deny();
 	}
 
 	public function beforeRender() {
@@ -17,7 +14,7 @@ class DataCategoriesController extends AppController {
 
 	}
 
-	public function index() {
+	public function admin_index() {
 		$this->set('title_for_layout', 'Manage Data Categories');
 	}
 
@@ -36,7 +33,7 @@ class DataCategoriesController extends AppController {
 	public function getnodes() {
 	    // retrieve the node id that Ext JS posts via ajax
 	    $parent = intval($_POST['node']);
-		
+
 	    // find all the nodes underneath the parent node defined above
 	    // the second parameter (true) means we only want direct children
 	    $nodes = $this->DataCategory->children($parent, true);
@@ -45,7 +42,7 @@ class DataCategoriesController extends AppController {
 	    foreach ($nodes as $key => &$node) {
 	    	$category_id = $node['DataCategory']['id'];
 	    	$category_name = $node['DataCategory']['name'];
-	    	
+
 	    	// Check for children
 	    	$has_children = $this->DataCategory->childCount($category_id, true);
 	    	if ($has_children) {
@@ -58,7 +55,7 @@ class DataCategoriesController extends AppController {
 					'contain' => false
 				));
 				$node['DataCategory']['no_data'] = ($datum == false);
-				$rearranged_nodes['leaves'][$category_id] = $node;	
+				$rearranged_nodes['leaves'][$category_id] = $node;
 	    	}
 	    }
 
@@ -69,7 +66,7 @@ class DataCategoriesController extends AppController {
 			array_values($rearranged_nodes['branches']),
 			array_values($rearranged_nodes['leaves'])
 		);
-	    
+
 	    // Visually note categories with no data
 	    $showNoData = false;
 
@@ -149,15 +146,15 @@ class DataCategoriesController extends AppController {
 					$this->Flash->error("Error with nested data category structure. Looks like there's an extra indent in line $line_num: \"$name\"");
 					continue;
 				}
-				
+
 				// Strip leading/trailing whitespace and hyphens used for indenting
 				$name = ltrim($name, '-');
 				$name = trim($name);
-				
+
 				if (! $name) {
 					continue;
 				}
-				
+
 				$this->DataCategory->create();
 				if (! $this->request->data['DataCategory']['name']) {
 					$this->Flash->error('Data category name is blank.');
@@ -236,11 +233,11 @@ class DataCategoriesController extends AppController {
 		$path = array_reverse($path);
 		$this->set(compact('path'));
 	}
-	
+
 	/**
 	 * Attempts to delete a category (and all children), but won't if data is associated
 	 * @param int $id
-	 * @return string Result message 
+	 * @return string Result message
 	 */
 	public function remove($id) {
 		$this->DataCategory->id = $id;
@@ -258,13 +255,13 @@ class DataCategoriesController extends AppController {
 		$this->set(compact('message'));
 		$this->layout = 'ajax';
 	}
-	
+
 	public function get_name($id) {
 		$this->DataCategory->id = $id;
 		if ($this->DataCategory->exists()) {
 			$name = $this->DataCategory->field('name');
 		} else {
-			$name = "Error: Category does not exist";	
+			$name = "Error: Category does not exist";
 		}
 		$this->set(compact('name'));
 		$this->layout = 'ajax';
