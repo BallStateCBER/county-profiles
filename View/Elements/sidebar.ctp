@@ -85,6 +85,15 @@
 <?php if ($sidebar['logged_in']): ?>
 	<p>
 		<?php echo $this->Html->link(
+            'Data Categories Manger',
+            array(
+                'admin' => true,
+                'controller' => 'data_categories',
+                'action' => 'index'
+            )
+        ); ?>
+        <br />
+		<?php echo $this->Html->link(
 			'Edit County Info',
 			array(
 				'admin' => true,
