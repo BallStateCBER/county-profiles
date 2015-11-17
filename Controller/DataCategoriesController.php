@@ -170,7 +170,7 @@ class DataCategoriesController extends AppController {
 			}
 		}
 		$this->redirect(array(
-		    'prefix' => 'admin'
+		    'prefix' => 'admin',
 		    'action' => 'index'
         ));
 	}
