@@ -26,7 +26,10 @@
 	</p>
 <?php $this->end(); ?>
 
-<?php echo $this->element('flash_messages', array(), array('plugin' => 'DataCenter')); ?>
+<?php $this->start('flash_messages'); ?>
+    <?php echo $this->element('flash_messages', array(), array('plugin' => 'DataCenter')); ?>
+<?php $this->end(); ?>
+
 <div id="content">
 	<?php echo $this->fetch('content'); ?>
 </div>
