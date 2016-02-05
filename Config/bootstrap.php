@@ -136,10 +136,15 @@ Cache::config('default', array(
 
 CakePlugin::load('DataCenter');
 CakePlugin::load('GoogleCharts');
-CakePlugin::load('DataImport');
 App::uses('AppExceptionHandler', 'Lib');
 CakePlugin::load('DebugKit');
 App::uses('FireCake','DebugKit.Lib');
+
+if (Configure::read('debug')) {
+    CakePlugin::load('DataImport');
+    CakePlugin::load('CberDataGrabberPlugin');
+}
+
 
 // Migration from 2.1 to 2.2
 // Enable the Dispatcher filters for plugin assets, and
