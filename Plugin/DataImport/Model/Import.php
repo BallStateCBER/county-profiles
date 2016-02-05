@@ -9,13 +9,13 @@ class Import extends AppModel {
     public $default_loc_type = 'county';
     public $last_header_row = array();
 	public $Location;
-    
+
 	public function __construct($id = false, $table = null, $ds = null) {
 	    parent::__construct($id, $table, $ds);
 	    App::uses('Location', 'Model');
 		$this->Location = new Location();
 	}
-    
+
     /* Expected contents of $params:
      * 		file_path => full path to file
 	 * 		rows_per_page =>
@@ -24,32 +24,32 @@ class Import extends AppModel {
 	 * 			Number of rows in import file before data begins
 	 * 		default_loc_type => 'county', 'state', 'tax district', etc.
 	 * 			Assumed to be 'county' if not specified
-	 *		loc_types => array(row_num => loc_type_name, ...), 
+	 *		loc_types => array(row_num => loc_type_name, ...),
 	 *			Used for specifying rows with loc types other than the default
 	 *			Row numbers start with zero at the first row with data (skipping header rows)
 	 *		columns => array(
 	 *			loc_code => column num or array(DLGF tax district ID column num, county FIPS code column num)
 	 *				Location code, e.g. FIPS code, school corp #, or DLGF ID
 	 *				Since DLGF district IDs are not unique, they must be paired with county FIPS codes.
-	 *			loc_name => column num 
+	 *			loc_name => column num
 	 *				Optional, used to pull a location name that is displayed when the row is processed
 	 *			date => column num
-	 *				Date is numeric expected to be in format YYYY, YYYYMM, or YYYYMMDD 
+	 *				Date is numeric expected to be in format YYYY, YYYYMM, or YYYYMMDD
 	 *			data => array(
 	 *				column num => array(category name, category ID),
 	 *				...
 	 *			)
 	 *		)
-	 *	
+	 *
 	 *	"Data group" Variation
 	 *	When a column has data in multiple categories, e.g.
 	 * 							Profits		Employment
 	 * 		This Industry		  ##			##
 	 * 		That Industry		  ##			##
 	 * 		The Other Industry	  ##			##
-	 * 	the columns['data_group'] parameter must be set 
+	 * 	the columns['data_group'] parameter must be set
 	 * 	and columns['data'] must be arranged differently
-	 * 
+	 *
 	 *	$params['columns']['data_group'] = column num
 	 *		Specify the column that contains the names of the category groups
 	 *		(e.g. This Industry, That Industry, etc. that contain multiple data categories)
@@ -69,15 +69,15 @@ class Import extends AppModel {
 	 * 		Indiana		  		  ##			##
 	 * 		Adams County		  ##			##
 	 * 		Allen County		  ##			##
-	 * Instead of specifying $params['columns']['date'], 
-	 * the column number at which the date range starts (1990) must be specified: 
+	 * Instead of specifying $params['columns']['date'],
+	 * the column number at which the date range starts (1990) must be specified:
 	 * $params['columns']['date_range_start'] = column num
 	 * Also, the columns['data'] parameter is set differently:
 	 * $params['columns']['data'] = array(category name, category id)
-	 * 
-	 * Templates for how the three varieties of $params can be set are at 
-	 * the bottom of this file. 
-	 * 
+	 *
+	 * Templates for how the three varieties of $params can be set are at
+	 * the bottom of this file.
+	 *
      * Returns: array(variables_for_view, import_results)
      */
 	public function processDataFile($params, $auto, $page) {
@@ -89,7 +89,7 @@ class Import extends AppModel {
 		$file_path = $directory.'\\'.$filename;
 		$fh = @fopen($file_path, 'r');
 		if ($fh) {
-			if ($page !== false) {				
+			if ($page !== false) {
 				$page_begin = $page * $rows_per_page;
 				$page_end = (($page + 1) * $rows_per_page) - 1;
 
@@ -99,13 +99,13 @@ class Import extends AppModel {
 					// Skip header rows
 					if ($header_row_count > 0) {
 						$header_row_count--;
-						
+
 						// Store the last header row in case this file has a date series
 						// and the header needs to be referenced to determine each value's date
 						if ($header_row_count == 0) {
 							$this->last_header_row = explode("\t", $row);
 						}
-						
+
 						continue;
 					}
 
@@ -114,8 +114,8 @@ class Import extends AppModel {
 						$row_num++;
 						continue;
 					}
-					
-					
+
+
 					// Skip blank rows
 					if (trim($row) == '') {
 						$row_num++;
@@ -142,7 +142,7 @@ class Import extends AppModel {
 					$retval .= '<tr><td colspan="5" class="success">Import complete</td></tr>';
 					$auto = false;
 				}
-				
+
 			} else {
 				$retval = '<tr><td colspan="5">Ready to import</td></tr>';
 			}
@@ -150,7 +150,7 @@ class Import extends AppModel {
 			$retval = '<tr><td colspan="5" class="error">Can\'t open import file.</td></tr>';
 		}
 		return array(
-			'variables_for_view' => compact('auto', 'rows_encountered', 'rows_per_page', 'row_num'), 
+			'variables_for_view' => compact('auto', 'rows_encountered', 'rows_per_page', 'row_num'),
 			'import_results' => $retval
 		);
 	}
@@ -159,10 +159,10 @@ class Import extends AppModel {
 	private function processImportRow($params, $fields, $row_num) {
 		extract($params);
 		$retval = "<tr class=\"header\"><td>Location</td><td>Category</td><td>Date</td><td>Value</td><td>Result</td></tr>";
-		
-		// Resolve location info 
+
+		// Resolve location info
 		$loc_code_col = $columns['loc_code'];
-		
+
 		// For tax districts, which are identified by non-unique district IDs paired with county FIPS codes
 		if (is_array($loc_code_col)) {
 			$loc_code = array();
@@ -178,13 +178,13 @@ class Import extends AppModel {
 		} elseif (isset($default_loc_type)) {
 			$loc_type = $default_loc_type;
 		} else {
-			$loc_type = $this->default_loc_type;	
+			$loc_type = $this->default_loc_type;
 		}
 		$loc_type_id = $this->Location->getLocTypeId($loc_type);
 		$loc_id = $this->Location->getIdFromCode($loc_code, $loc_type_id);
 		if (! $loc_id) {
 			$retval .= "<tr><td colspan=\"5\" class=\"error\">Location not found (Code: ".print_r($loc_code, true).", Type ID: $loc_type_id)</td></tr>";
-			return array($retval, true);	
+			return array($retval, true);
 		}
 		if (isset($columns['loc_name'])) {
 			$loc_name_col = $columns['loc_name'];
@@ -192,9 +192,9 @@ class Import extends AppModel {
 		} else {
 			$loc_name = '(No location name provided)';
 		}
-		
+
 		$error = false;
-		
+
 		// If the 'data groups' variation is being used
 		if (isset($columns['data_group'])) {
 			$date = $fields[$columns['date']];
@@ -217,7 +217,7 @@ class Import extends AppModel {
 				$retval .= "<tr><td>$loc_name</td><td></td><td>$date</td><td></td>$result_cell</tr>";
 				$error = true;
 			}
-		
+
 		// If the 'date range' variation is being used
 		} elseif(isset($columns['date_range_start'])) {
 			$category_name = $columns['data'][0];
@@ -234,8 +234,8 @@ class Import extends AppModel {
 					break;
 				}
 			}
-			
-		// Otherwise, each column is expected to only contain values in one category 
+
+		// Otherwise, each column is expected to only contain values in one category
 		} else {
 			$date = $fields[$columns['date']];
 			$survey_date = $this->cleanSurveyDate($date);
@@ -255,14 +255,14 @@ class Import extends AppModel {
 	}
 
 	private function cleanSurveyDate($date) {
-		return (int) str_pad(trim($date), 8, '0');	
+		return (int) str_pad(trim($date), 8, '0');
 	}
-	
+
 	private function cleanValue($value) {
 		$remove_these_characters = array('$', '%', ',', '"');
 		return trim(str_replace($remove_these_characters, '', $value));
 	}
-	
+
 	// Returns array($result_cell, $error)
 	private function insertResultCell($insert_result) {
 		$error = false;
@@ -367,7 +367,7 @@ class Import extends AppModel {
 		if ($this->safety) return 5;
 
 		$this->create();
-		
+
 		// One or more entries exist in the database for this datum
 		if ($overwriting) {
 			// Multiple entries (at least two) exist in the database for this combination of
@@ -471,11 +471,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_demo_age() {
 		return array(
 			'filename' => 'IN - 02 - Demographics - Age breakdown 2010.txt',	// tab-delimited
-			'source_id' => 44, 
+			'source_id' => 44,
 			'header_row_count' => 3,
 			'columns' => array(
 				'loc_code' => 0,
@@ -512,11 +512,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_demo_income() {
 		return array(
 			'filename' => 'IN - 02 - Demographics - Household Income 2010.txt',	// tab-delimited
-			'source_id' => 48, 
+			'source_id' => 48,
 			'header_row_count' => 2,
 			'columns' => array(
 				'loc_code' => 0,
@@ -533,7 +533,7 @@ class Import extends AppModel {
 					12 => array('People: $100,000 to $149,999',		20),
 					13 => array('People: $150,000 to $199,999',		136),
 					14 => array('People: $200,000 or more',			137),
-					 
+
 					15 => array('Percent: Less than $10,000',		223),
 					16 => array('Percent: $10,000 to $14,999',		224),
 					17 => array('Percent: $15,000 to $24,999',		225),
@@ -548,11 +548,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_demo_race() {
 		return array(
 			'filename' => 'IN - 02 - Demographics - Racial Makeup 2010.txt',	// tab-delimited
-			'source_id' => 44, 
+			'source_id' => 44,
 			'header_row_count' => 3,
 			'columns' => array(
 				'loc_code' => 0,
@@ -567,7 +567,7 @@ class Import extends AppModel {
 					 9 => array('Population: Native American',		297),
 					10 => array('Population: Other (one race)',		311),
 					11 => array('Population: Two or more races',	312),
-					 
+
 					12 => array('Percent: White',					385),
 					13 => array('Percent: Black',					386),
 					14 => array('Percent: Hispanic or Latino',		409),
@@ -580,11 +580,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_demo_educational_attainment() {
 		return array(
 			'filename' => 'IN - 02 - Demographics - Educational Attainment 2010.txt',	// tab-delimited
-			'source_id' => 45, 
+			'source_id' => 45,
 			'header_row_count' => 3,
 			'loc_types' => array(0 => 'state'),
 			'columns' => array(
@@ -600,7 +600,7 @@ class Import extends AppModel {
 					 8 => array('Population: Associate\'s degree',				460),
 					 9 => array('Population: Bachelor\'s degree',				461),
 					10 => array('Population: Graduate or professional degree',	5725),
-					 
+
 					12 => array('Percent: Less than 9th grade',					5712),
 					13 => array('Percent: 9th to 12th grade, no diploma',		468),
 					14 => array('Percent: High school graduate (includes equivalency)',	469),
@@ -612,11 +612,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_econ_employment() {
 		return array(
 			'filename' => 'IN - 03 - Economy - Employment 1990 to 2011.txt',	// tab-delimited
-			'source_id' => 46, 
+			'source_id' => 46,
 			'header_row_count' => 2,
 			'loc_types' => array(0 => 'state'),
 			'columns' => array(
@@ -627,11 +627,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_econ_unemployment() {
 		return array(
 			'filename' => 'IN - 03 - Economy - Employment and Unemployment 1990 to 2011.txt',	// tab-delimited
-			'source_id' => 49, 
+			'source_id' => 49,
 			'header_row_count' => 1,
 			'loc_types' => array(0 => 'state'),
 			'columns' => array(
@@ -642,11 +642,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_econ_transfer_line() {
 		return array(
 			'filename' => 'Transfer Payments as Percent of Personal Income 2010.txt',	// tab-delimited
-			'source_id' => 47, 
+			'source_id' => 47,
 			'header_row_count' => 3,
 			'loc_types' => array(0 => 'state'),
 			'columns' => array(
@@ -657,25 +657,26 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_youth_wages() {
 		return array(
-			'filename' => 'IN - 05 - Youth - Youth Wages, 19-21 2011 Q1.txt',	// tab-delimited
-			'source_id' => 50, 
-			'header_row_count' => 2,
+			'filename' => 'IN - 05 - Youth - Youth Wages, 01-19 2014 Q4.txt',	// tab-delimited
+			'source_id' => 59,
+			'header_row_count' => 1,
+			'loc_types' => array(0 => 'state'),
 			'columns' => array(
 				'loc_code' => 0,
-				'loc_name' => 2,
-				'date_range_start' => 4,
+				'loc_name' => 1,
+				'date_range_start' => 2,
 				'data' => array('Youth wages', 5395)	// (name, category ID)
 			)
 		);
 	}
-	
+
 	function import_youth_graduation() {
 		return array(
 			'filename' => 'IN - 05 - Youth - High School Graduation Rates 2011.txt',	// tab-delimited
-			'source_id' => 28, 
+			'source_id' => 28,
 			'header_row_count' => 1,
 			'default_loc_type' => 'school corporation',
 			'loc_types' => array(0 => 'state'),
@@ -687,11 +688,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_econ_transfer_breakdown_1() {
 		return array(
 			'filename' => 'IN - 03 - Economy - Breakdown ofTransfer Payments 1.txt',	// tab-delimited
-			'source_id' => 51, 
+			'source_id' => 51,
 			'header_row_count' => 1,
 			'loc_types' => array(0 => 'state'),
 			'columns' => array(
@@ -702,11 +703,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_econ_transfer_breakdown_2() {
 		return array(
 			'filename' => 'IN - 03 - Economy - Breakdown ofTransfer Payments 2.txt',	// tab-delimited
-			'source_id' => 51, 
+			'source_id' => 51,
 			'header_row_count' => 1,
 			'loc_types' => array(0 => 'state'),
 			'columns' => array(
@@ -717,11 +718,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_econ_transfer_breakdown_3() {
 		return array(
 			'filename' => 'IN - 03 - Economy - Breakdown ofTransfer Payments 3.txt',	// tab-delimited
-			'source_id' => 51, 
+			'source_id' => 51,
 			'header_row_count' => 1,
 			'loc_types' => array(0 => 'state'),
 			'columns' => array(
@@ -732,11 +733,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_econ_transfer_breakdown_4() {
 		return array(
 			'filename' => 'IN - 03 - Economy - Breakdown ofTransfer Payments 4.txt',	// tab-delimited
-			'source_id' => 51, 
+			'source_id' => 51,
 			'header_row_count' => 1,
 			'loc_types' => array(0 => 'state'),
 			'columns' => array(
@@ -747,11 +748,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_econ_transfer_breakdown_5() {
 		return array(
 			'filename' => 'IN - 03 - Economy - Breakdown ofTransfer Payments 5.txt',	// tab-delimited
-			'source_id' => 51, 
+			'source_id' => 51,
 			'header_row_count' => 1,
 			'loc_types' => array(0 => 'state'),
 			'columns' => array(
@@ -762,11 +763,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_econ_transfer_breakdown_6() {
 		return array(
 			'filename' => 'IN - 03 - Economy - Breakdown ofTransfer Payments 6.txt',	// tab-delimited
-			'source_id' => 51, 
+			'source_id' => 51,
 			'header_row_count' => 1,
 			'loc_types' => array(0 => 'state'),
 			'columns' => array(
@@ -777,11 +778,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_econ_transfer_breakdown_7() {
 		return array(
 			'filename' => 'IN - 03 - Economy - Breakdown ofTransfer Payments 7.txt',	// tab-delimited
-			'source_id' => 51, 
+			'source_id' => 51,
 			'header_row_count' => 1,
 			'loc_types' => array(0 => 'state'),
 			'columns' => array(
@@ -792,11 +793,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_econ_workerscomp() {
 		return array(
 			'filename' => 'IN - 03 - Economy - Workers Compensation Insurance Paid.txt',	// tab-delimited
-			'source_id' => 53, 
+			'source_id' => 53,
 			'header_row_count' => 1,
 			'loc_types' => array(0 => 'state'),
 			'columns' => array(
@@ -807,11 +808,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_econ_wages_emp_comparison() {
 		return array(
 			'filename' => 'IN - 03 - Economy - Wages and Employment comparison 2010.txt',	// tab-delimited
-			'source_id' => 52, 
+			'source_id' => 52,
 			'header_row_count' => 2,
 			'loc_types' => array_fill(0, 7, 'state'),
 			'columns' => array(
@@ -867,11 +868,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_econ_share($filename, $category_name, $category_id) {
 		return array(
 			'filename' => $filename,	// tab-delimited
-			'source_id' => 55, 
+			'source_id' => 55,
 			'header_row_count' => 1,
 			'default_loc_type' => 'county',
 			'loc_types' => array(0 => 'state'),
@@ -883,7 +884,7 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_econ_share_ag_emp() {
 		return $this->import_econ_share(
 			'IN - 03 - Economy - Wages and Employment Comparison by Industry 2010 - ag emp.txt',
@@ -891,7 +892,7 @@ class Import extends AppModel {
 			5389
 		);
 	}
-	
+
 	function import_econ_share_ag_wages() {
 		return $this->import_econ_share(
 			'IN - 03 - Economy - Wages and Employment Comparison by Industry 2010 - ag wages.txt',
@@ -899,7 +900,7 @@ class Import extends AppModel {
 			5380
 		);
 	}
-	
+
 	function import_econ_share_const_emp() {
 		return $this->import_econ_share(
 			'IN - 03 - Economy - Wages and Employment Comparison by Industry 2010 - const emp.txt',
@@ -907,7 +908,7 @@ class Import extends AppModel {
 			5390
 		);
 	}
-	
+
 	function import_econ_share_const_wages() {
 		return $this->import_econ_share(
 			'IN - 03 - Economy - Wages and Employment Comparison by Industry 2010 - const wages.txt',
@@ -915,7 +916,7 @@ class Import extends AppModel {
 			5381
 		);
 	}
-	
+
 	function import_econ_share_farm_emp() {
 		return $this->import_econ_share(
 			'IN - 03 - Economy - Wages and Employment Comparison by Industry 2010 - farm emp.txt',
@@ -923,7 +924,7 @@ class Import extends AppModel {
 			5388
 		);
 	}
-	
+
 	function import_econ_share_farm_wages() {
 		return $this->import_econ_share(
 			'IN - 03 - Economy - Wages and Employment Comparison by Industry 2010 - farm wages.txt',
@@ -931,7 +932,7 @@ class Import extends AppModel {
 			5379
 		);
 	}
-	
+
 	function import_econ_share_gov_emp() {
 		return $this->import_econ_share(
 			'IN - 03 - Economy - Wages and Employment Comparison by Industry 2010 - gov emp.txt',
@@ -939,7 +940,7 @@ class Import extends AppModel {
 			5394
 		);
 	}
-	
+
 	function import_econ_share_gov_wages() {
 		return $this->import_econ_share(
 			'IN - 03 - Economy - Wages and Employment Comparison by Industry 2010 - gov wages.txt',
@@ -947,7 +948,7 @@ class Import extends AppModel {
 			5385
 		);
 	}
-	
+
 	function import_econ_share_manu_emp() {
 		return $this->import_econ_share(
 			'IN - 03 - Economy - Wages and Employment Comparison by Industry 2010 - manu emp.txt',
@@ -955,7 +956,7 @@ class Import extends AppModel {
 			5391
 		);
 	}
-	
+
 	function import_econ_share_manu_wages() {
 		return $this->import_econ_share(
 			'IN - 03 - Economy - Wages and Employment Comparison by Industry 2010 - manu wages.txt',
@@ -963,7 +964,7 @@ class Import extends AppModel {
 			5382
 		);
 	}
-	
+
 	function import_econ_share_serv_emp() {
 		return $this->import_econ_share(
 			'IN - 03 - Economy - Wages and Employment Comparison by Industry 2010 - serv emp.txt',
@@ -971,7 +972,7 @@ class Import extends AppModel {
 			5393
 		);
 	}
-	
+
 	function import_econ_share_serv_wages() {
 		return $this->import_econ_share(
 			'IN - 03 - Economy - Wages and Employment Comparison by Industry 2010 - serv wages.txt',
@@ -979,7 +980,7 @@ class Import extends AppModel {
 			5384
 		);
 	}
-	
+
 	function import_econ_share_trans_emp() {
 		return $this->import_econ_share(
 			'IN - 03 - Economy - Wages and Employment Comparison by Industry 2010 - trans emp.txt',
@@ -987,7 +988,7 @@ class Import extends AppModel {
 			5392
 		);
 	}
-	
+
 	function import_econ_share_trans_wages() {
 		return $this->import_econ_share(
 			'IN - 03 - Economy - Wages and Employment Comparison by Industry 2010 - trans wages.txt',
@@ -995,11 +996,11 @@ class Import extends AppModel {
 			5383
 		);
 	}
-	
+
 	function import_econ_taxrates() {
 		return array(
 			'filename' => 'IN - 03 - Economy - Property Tax Rates 2011.txt',	// tab-delimited
-			'source_id' => 54, 
+			'source_id' => 54,
 			'header_row_count' => 2,
 			'default_loc_type' => 'tax district',
 			'columns' => array(
@@ -1013,11 +1014,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_econ_innkeepers_taxrates() {
 		return array(
 			'filename' => 'IN - 03 - Economy - Innkeepers Tax 2011.txt',	// tab-delimited
-			'source_id' => 54, 
+			'source_id' => 54,
 			'header_row_count' => 3,
 			'columns' => array(
 				'loc_code' => 0,
@@ -1029,11 +1030,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_entre_smallfirms($year) {
 		return array(
 			'filename' => "IN - 05 - Entrepreneurial Activities - Small Firms $year.txt",	// tab-delimited
-			'source_id' => 56, 
+			'source_id' => 56,
 			'header_row_count' => 4,
 			'default_loc_type' => 'county',
 			'loc_types' => array_fill(0, 21, 'state'),
@@ -1174,19 +1175,19 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_entre_smallfirms_2008() {
 		return $this->import_entre_smallfirms(2008);
 	}
-	
+
 	function import_entre_smallfirms_2009() {
 		return $this->import_entre_smallfirms(2009);
 	}
-	
+
 	function import_soc_income_charorgs() {
 		return array(
 			'filename' => 'IN - 06 - Social Capital - Income from Social and Fraternal Organizations 2010.txt',	// tab-delimited
-			'source_id' => 57, 
+			'source_id' => 57,
 			'header_row_count' => 1,
 			'default_loc_type' => 'county',
 			'loc_types' => array(0 => 'state'),
@@ -1198,11 +1199,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_youth_poverty() {
 		return array(
 			'filename' => 'IN - 05 - Youth - Youth in poverty - 2010.txt',	// tab-delimited
-			'source_id' => 58, 
+			'source_id' => 58,
 			'header_row_count' => 6,
 			'loc_types' => array(0 => 'state'),
 			'columns' => array(
@@ -1215,11 +1216,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_soc_inequality() {
 		return array(
 			'filename' => 'IN - 06 - Social Capital - Income Inequality 2010.txt',	// tab-delimited
-			'source_id' => 48, 
+			'source_id' => 48,
 			'header_row_count' => 2,
 			'loc_types' => array(0 => 'state'),
 			'columns' => array(
@@ -1232,12 +1233,12 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	/*
 	function import_default_template() {
 		return array(
 			'filename' => '.txt',	// tab-delimited
-			'source_id' => , 
+			'source_id' => ,
 			'header_row_count' => ,
 			'default_loc_type' => 'county',
 			'loc_types' => array(),
@@ -1251,11 +1252,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_data_groups_template() {
 		return array(
 			'filename' => '.txt',	// tab-delimited
-			'source_id' => , 
+			'source_id' => ,
 			'header_row_count' => ,
 			'default_loc_type' => 'county',
 			'loc_types' => array(),
@@ -1275,11 +1276,11 @@ class Import extends AppModel {
 			)
 		);
 	}
-	
+
 	function import_date_series_template() {
 		return array(
 			'filename' => '.txt',	// tab-delimited
-			'source_id' => , 
+			'source_id' => ,
 			'header_row_count' => ,
 			'default_loc_type' => 'county',
 			'loc_types' => array(),
