@@ -8,29 +8,29 @@ class SegmentData extends AppModel {
 	public $useTable = 'statistics';
 	public $segmentParams = array(
 		'county_id' => null,		// The county selected for this segment (required by DataOutputBehavior)
-		'locations' => array(),		// 1 or more locations, formatted like array('id' => $id, 'type_id' => $type_id) 
+		'locations' => array(),		// 1 or more locations, formatted like array('id' => $id, 'type_id' => $type_id)
 		'categories' => array(),	// 1 or more category IDs
 		'dates' => array()			// Optional
 	);
 	public $Location = null;
 	public $county_id = null;
 	public $structure = array();	// Optional array passed to Chart/Table to help with arranging data
-	public $subsegments = array();	/* If this is populated with shorthand_name => title pairs 
+	public $subsegments = array();	/* If this is populated with shorthand_name => title pairs
 									 * (e.g. 'econ_share_farm' => 'Farm employment'), then each subsegment
 									 * will have its output gathered and displayed as chart/table options. */
 	public $subsegments_display = 'toggled';	// stacked: Charts / tables appear stacked
 												// toggled: Each subsegment has a link to view it.
-	
+
 	public function getData($segment, $county) {
 		$this->Location = new Location();
 		$this->county_id = $this->Location->getCountyIdFromSlug($county);
 		$this->segmentParams['county_id'] = $this->county_id;
-		
+
 		// Call the segment-specific method to set SegmentData's attributes
 		if (method_exists($this, $segment)) {
 			$this->{$segment}();
 		}
-		
+
 		// Collect data and sources
 		$conditions = $this->__getQueryConditions();
 		$arranged_data = array();
@@ -41,7 +41,7 @@ class SegmentData extends AppModel {
 				$results = $this->find('all', array(
 					'conditions' => $conditions,
 					'fields' => array(
-						'loc_type_id', 
+						'loc_type_id',
 						'loc_id',
 						'survey_date',
 						'category_id',
@@ -67,7 +67,7 @@ class SegmentData extends AppModel {
 				}
 			}
 		}
-		
+
 		return array(
 			'data' => $arranged_data,
 			'source_ids' => $source_ids,
@@ -76,22 +76,22 @@ class SegmentData extends AppModel {
 			'subsegments_display' => $this->subsegments_display
 		);
 	}
-	
+
 	private function __getQueryConditions() {
 		if (empty($this->segmentParams['categories'])) {
 			return false;
 		}
-		
+
 		$conditions = array();
-		
+
 		// Set one or more categories
 		$conditions['category_id'] = $this->segmentParams['categories'];
-		
+
 		// Set dates, if any are specified
 		if ($this->segmentParams['dates']) {
 			$conditions['survey_date'] = $this->segmentParams['dates'];
 		}
-		
+
 		// Set one or more locations
 		if (count($this->segmentParams['locations']) == 1) {
 			$conditions['loc_id'] = $this->segmentParams['locations'][0]['id'];
@@ -107,10 +107,10 @@ class SegmentData extends AppModel {
 				);
 			}
 		}
-		
+
 		return $conditions;
 	}
-	
+
 	/**
 	 * Sets (or adds to) the array of category IDs for this segment
 	 * @param array|int $category_ids,...
@@ -126,7 +126,7 @@ class SegmentData extends AppModel {
 		}
 		array_unique($this->segmentParams['categories']);
 	}
-	
+
 	/**
 	 * Sets the child categories of the specified parent category / categories.
 	 * Returns array: $retval[$parent_id][$category_id] => $category_name
@@ -155,7 +155,7 @@ class SegmentData extends AppModel {
 				foreach ($results as $result) {
 					$category_id = $result['data_categories']['id'];
 					$this->__setCategories($category_id);
-					
+
 					$category_name = $result['data_categories']['name'];
 					$retval[$parent_id][$category_id] = $category_name;
 				}
@@ -165,7 +165,7 @@ class SegmentData extends AppModel {
 		}
 		return $retval;
 	}
-	
+
 	/**
 	 * Sets the date or dates for this segment
 	 * @param array|int $dates
@@ -180,7 +180,7 @@ class SegmentData extends AppModel {
 			$this->__setDate($dates);
 		}
 	}
-	
+
 	/**
 	 * Sets a single date for this segment
 	 * @param int $date
@@ -192,7 +192,7 @@ class SegmentData extends AppModel {
 			throw new InternalErrorException('Parameter for SegmentData::__setDates() ('.print_r($dates, true).') is not an array or integer.');
 		}
 	}
-	
+
 	/**
 	 * Sets the county ID for this segment
 	 * @param int $county_id
@@ -209,12 +209,12 @@ class SegmentData extends AppModel {
 			'type_id' => 2
 		);
 	}
-	
+
 	/**
 	 * Sets the state ID for this segment
 	 * @param int $state_id (Assumed to match the already-set county if not specified)
 	 */
-	private function __setState($state_id = null) {		
+	private function __setState($state_id = null) {
 		// Find state ID corresponding to already-set county
 		if (! $state_id) {
 			$state_id = $this->Location->getStateIdFromCountyId($this->county_id);
@@ -225,10 +225,10 @@ class SegmentData extends AppModel {
 				'type_id' => 3
 			);
 		} else {
-			throw new InternalErrorException('State ID could not be determined for SegmentData::__setState()');	
+			throw new InternalErrorException('State ID could not be determined for SegmentData::__setState()');
 		}
 	}
-	
+
 	/**
 	 * Sets the county's tax districts as this segment's locations
 	 * @param int $county_id
@@ -247,10 +247,10 @@ class SegmentData extends AppModel {
 				'type_id' => 5
 			);
 		}
-		
+
 		return ! empty($tax_districts);
 	}
-	
+
 	/**
 	 * Sets the county's school corps as this segment's locations
 	 * @param int $county_id
@@ -273,21 +273,21 @@ class SegmentData extends AppModel {
 			);
 		}
 	}
-	
-	
+
+
 	/*************************************************************/
-	
-	
+
+
 	private function demo_age() {
 		$this->__setCategories(
-			range(272, 284),	// Persons
-			range(363, 375)		// Percent
-		); 
-		
-		$this->__setDates(2010);
+            1,                  // Total population
+			range(272, 284)  	// Persons in age range
+		);
+
+		$this->__setDates(2013);
 		$this->__setCounty();
 	}
-	
+
 	private function demo_income() {
 		$this->__setCategories(
 			range(223, 232),	// Percent values
@@ -297,12 +297,12 @@ class SegmentData extends AppModel {
 		$this->__setDates(2010);
 		$this->__setCounty();
 	}
-	
+
 	private function demo_population() {
 		$this->__setCategories(1);
 		$this->__setCounty();
 	}
-	
+
 	private function demo_race() {
 		$this->__setCategories(
 			385,	// % White
@@ -325,7 +325,7 @@ class SegmentData extends AppModel {
 		$this->__setDates(2010);
 		$this->__setCounty();
 	}
-	
+
 	private function inputs_education() {
 		$this->__setCategories(
 			// Population
@@ -349,7 +349,7 @@ class SegmentData extends AppModel {
 		$this->__setCounty();
 		$this->__setState();
 	}
-	
+
 	private function econ_industry_comparebar() {
 		$this->__setDates(2006);
 		$this->__setCounty();
@@ -358,7 +358,7 @@ class SegmentData extends AppModel {
 			'Total Value-added' => 'Total Value-added ($ Millions)',
 			'Employment' => 'Employment (Persons)'
 		);
-		
+
 		// Pull the category IDs for the aggregate output, employment, and total value-added for each aggregate industry group
 		$categories = array();
 		foreach ($measures as $measure => $legend_label) {
@@ -385,7 +385,7 @@ class SegmentData extends AppModel {
 			}
 		}
 	}
-	
+
 	private function econ_top10($segment) {
 		$year = 2006;
 		$this->__setDates($year);
@@ -393,7 +393,7 @@ class SegmentData extends AppModel {
 		if ($segment == 'econ_top10_employment') {
 			$parent_cat_id = 668; // Employment
 		} elseif ($segment == 'econ_top10_output') {
-			$parent_cat_id = 667; // Output	
+			$parent_cat_id = 667; // Output
 		}
 		$cache_key = "econ_top10 $parent_cat_id $year $this->county_id";
 		if (! $results = Cache::read($cache_key)) {
@@ -425,20 +425,20 @@ class SegmentData extends AppModel {
 			$this->__setCategories($category_id);
 		}
 	}
-	
+
 	private function econ_top10_employment() {
-		$this->econ_top10('econ_top10_employment');	
+		$this->econ_top10('econ_top10_employment');
 	}
-	
+
 	private function econ_top10_output() {
-		$this->econ_top10('econ_top10_output');	
+		$this->econ_top10('econ_top10_output');
 	}
-	
+
 	private function econ_wage_emp_comparison() {
 		$year = 2010;
 		$this->__setDates($year);
 		$this->__setCounty();
-		
+
 		$this->structure = array(
 			'Farming, agricultural-related, and mining' => array(
 				'Employment' => 	5728,
@@ -483,7 +483,7 @@ class SegmentData extends AppModel {
 				'Wages %' => 		5753
 			)
 		);
-		
+
 		foreach ($this->structure as $broad_sector => $measures) {
 			foreach ($measures as $measure_name => $category_id) {
 				//$this->structure[$measure_name][$broad_sector][] = $category_id;
@@ -491,8 +491,8 @@ class SegmentData extends AppModel {
 			}
 		}
 		// Can I do this instead? $this->__setCategories(array_values(array_values($this->structure)));
-		
-		/* Old code below 
+
+		/* Old code below
 		$parent_category_ids = array(
 			'Employment' => 668,
 			'Employee Compensation' => 669
@@ -538,19 +538,19 @@ class SegmentData extends AppModel {
 		}
 		*/
 	}
-	
+
 	private function econ_share() {
 		$this->subsegments = array(
 			'econ_share_farm' => 'Farm employment',
-			'econ_share_ag' => 'Agricultural services, forestry, fishing, and mining', 
-			'econ_share_construction' => 'Construction', 
-			'econ_share_manufacturing' => 'Manufacturing', 
+			'econ_share_ag' => 'Agricultural services, forestry, fishing, and mining',
+			'econ_share_construction' => 'Construction',
+			'econ_share_manufacturing' => 'Manufacturing',
 			'econ_share_tput' => 'Transportation, public utilities, and trade',
 			'econ_share_services' => 'Services',
 			'econ_share_gov' => 'Government and government enterprises'
 		);
 	}
-	
+
 	private function econ_share_farm() {
 		$this->structure = array(
 			'wages' => 5379,
@@ -559,7 +559,7 @@ class SegmentData extends AppModel {
 		$this->__setCounty();
 		$this->__setCategories(array_values($this->structure));
 	}
-	
+
 	private function econ_share_ag() {
 		$this->structure = array(
 			'wages' => 5380,
@@ -568,7 +568,7 @@ class SegmentData extends AppModel {
 		$this->__setCounty();
 		$this->__setCategories(array_values($this->structure));
 	}
-		
+
 	private function econ_share_construction() {
 		$this->structure = array(
 			'wages' => 5381,
@@ -577,7 +577,7 @@ class SegmentData extends AppModel {
 		$this->__setCounty();
 		$this->__setCategories(array_values($this->structure));
 	}
-	
+
 	private function econ_share_manufacturing() {
 		$this->structure = array(
 			'wages' => 5382,
@@ -586,7 +586,7 @@ class SegmentData extends AppModel {
 		$this->__setCounty();
 		$this->__setCategories(array_values($this->structure));
 	}
-	
+
 	private function econ_share_tput() {
 		$this->structure = array(
 			'wages' => 5383,
@@ -604,7 +604,7 @@ class SegmentData extends AppModel {
 		$this->__setCounty();
 		$this->__setCategories(array_values($this->structure));
 	}
-	
+
 	private function econ_share_gov() {
 		$this->structure = array(
 			'wages' => 5385,
@@ -613,21 +613,21 @@ class SegmentData extends AppModel {
 		$this->__setCounty();
 		$this->__setCategories(array_values($this->structure));
 	}
-	
+
 	private function econ_transfer() {
 		$this->subsegments = array(
-			'econ_transfer_breakdown' => 'Types of Transfer Payments',	
+			'econ_transfer_breakdown' => 'Types of Transfer Payments',
 			'econ_transfer_percent' => 'Transfer Payments as Percent of Personal Income'
 		);
 		$this->subsegments_display = 'stacked';
 	}
-	
+
 	private function econ_transfer_percent() {
 		$this->__setCounty();
 		$this->__setDates(2010);
 		$this->__setCategories(5669);
 	}
-	
+
 	private function econ_transfer_breakdown() {
 		$this->__setCounty();
 		$this->__setDates(2010);
@@ -638,30 +638,30 @@ class SegmentData extends AppModel {
 			580  // Income Maintenance'
 		);
 	}
-	
+
 	private function econ_transfer_line() {
 		$this->__setCounty();
 		$this->__setState();
 		$this->__setCategories(5669);
 	}
-	
+
 	private function econ_employment() {
 		$this->__setCounty();
 		$this->__setCategories(568);
 	}
-	
+
 	private function econ_unemployment() {
 		$this->__setCounty();
 		$this->__setState();
 		$this->__setCategories(569);
 	}
-	
+
 	private function inputs_workerscomp() {
 		$this->__setCounty();
 		$this->__setState();
 		$this->__setCategories(9);
 	}
-	
+
 	private function inputs_taxrates() {
 		$this->__setCounty();
 		$this->__setTaxDistricts();
@@ -671,12 +671,12 @@ class SegmentData extends AppModel {
 			661 => 'SPTRC Rate (Business Personal Property)',
 			662 => 'SPTRC Rate (Real Estate & Other Personal Property)',
 			663 => 'Homestead Credit Rate (State)',
-			664 => 'County COIT Homestead Credit Rate', 	
+			664 => 'County COIT Homestead Credit Rate',
 			5691 => 'Innkeeper\'s Tax Rate'
 		);
 		$this->__setCategories(array_keys($this->structure));
 	}
-	
+
 	private function entre_smallfirms() {
 		$this->subsegments = array(
 			'entre_smallfirms_1_4' => '1-4 employees',
@@ -684,13 +684,13 @@ class SegmentData extends AppModel {
 			'entre_smallfirms_10_19' => '10-19 employees'
 		);
 	}
-	
+
 	private function entre_smallfirms_shared($child_category_names) {
 		$this->__setCounty();
 		$this->__setDates(array(2008, 2009));
 		$parent_category_ids = array(
-			5437, 5448, 5459, 5470, 5481, 5492, 5503, 
-			5514, 5525, 5536, 5547, 5558, 5569, 5580, 
+			5437, 5448, 5459, 5470, 5481, 5492, 5503,
+			5514, 5525, 5536, 5547, 5558, 5569, 5580,
 			5591, 5602, 5613, 5624, 5635, 5646, 5657
 		);
 		$parents_hash = md5(serialize($parent_category_ids));
@@ -713,25 +713,25 @@ class SegmentData extends AppModel {
 			$this->__setCategories($category_id);
 		}
 	}
-	
+
 	private function entre_smallfirms_1_4() {
 		$this->entre_smallfirms_shared(array('"Total establishments"', '"1-4 employees"'));
 	}
-	
+
 	private function entre_smallfirms_5_9() {
 		$this->entre_smallfirms_shared(array('"Total establishments"', '"5-9 employees"'));
 	}
-	
+
 	private function entre_smallfirms_10_19() {
 		$this->entre_smallfirms_shared(array('"Total establishments"', '"10-19 employees"'));
 	}
-	
+
 	private function youth_wages() {
 		$this->__setCounty();
 		$this->__setState();
 		$this->__setCategories(5395);
 	}
-	
+
 	private function youth_poverty() {
 		$this->__setCounty();
 		$this->__setState();
@@ -743,15 +743,15 @@ class SegmentData extends AppModel {
 		$this->__setSchoolCorps();
 		$this->__setState();
 		$this->__setCategories(5396);
-		$this->__setDates(2011);	
+		$this->__setDates(2011);
 	}
-	
+
 	private function soc_inequality() {
 		$this->__setCounty();
 		$this->__setState();
 		$this->__setCategories(5668);
 	}
-	
+
 	private function soc_charitable() {
 		$this->structure['org_types'] = array(
 			5399 => 'Religious',
@@ -765,7 +765,7 @@ class SegmentData extends AppModel {
 		$this->__setDates(2006);
 		$this->__setCounty();
 	}
-	
+
 	private function soc_income_charorgs() {
 		$this->__setCounty();
 		$this->__setCategories(7);

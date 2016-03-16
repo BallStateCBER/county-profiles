@@ -4,13 +4,13 @@ class Table extends AppModel {
 	public $name = 'Table';
 	public $useTable = false;
 	public $actsAs = array('DataOutput');
-	
+
 	// Supplied by getTable()'s parameters
 	public $segment = null;
 	public $data = array();
 	public $segmentParams = array();
 	public $structure = array();
-	
+
 	// Set by segment-specific methods
 	public $title = null;				// Table title
 	public $columns = array();			// Column headers
@@ -21,28 +21,28 @@ class Table extends AppModel {
 										 * Category | People | Percent | People | Percent |
 
 										 * Would be: array(
-										 * 		null, 
+										 * 		null,
 										 * 		array('colspan' => 2', 'label' => 'County'),
 										 * 		array('colspan' => 2', 'label' => 'State')
 										 * )
-										 */ 
+										 */
 	public $pos_neg_columns = array();	// Column #s to highlight pos/neg as green/red
-	public $footnote = "";				// Table footnote 
-	
+	public $footnote = "";				// Table footnote
+
 	public function getTable($segment, $data, $segment_params, $structure) {
 		$this->segment = $segment;
 		$this->data = $data;
 		$this->segmentParams = $segment_params;
 		$this->structure = $structure;
-		
+
 		if (! $data) {
-			return null;	
+			return null;
 		}
-		
+
 		if (method_exists($this, $segment)) {
 			$this->{$segment}();
 		}
-		
+
 		$table = array(
 			'title' => $this->title,
 			'columns' => $this->columns,
@@ -53,65 +53,68 @@ class Table extends AppModel {
 		);
 		return $table;
 	}
-	
+
 	private function demo_age() {
 		$county_name = $this->getCountyName();
 		$title = 'Age Breakdown';
 		$year = $this->getYears();
 		$this->title = "$county_name\n$title\n($year)";
 		$this->columns = array('Age Range', 'People', 'Percent');
-		
+
 		$data2 = array();
 		foreach ($this->data as $category_id => $loc_keys) {
-			foreach ($loc_keys as $loc_key => $dates) { 
+			foreach ($loc_keys as $loc_key => $dates) {
 				foreach ($dates as $date => $value) {
 					$data2[$category_id] = $value;
 				}
 			}
 		}
-		
-		// 'Row label' => array(people category id, percent category id) 
+
+		// 'Row label' => people category id
 		$row_structure = array(
-			'Under 5 years' => array(272, 363),
-			'5 to 9 years' => array(273, 364),
-			'10 to 14 years' => array(274, 365),
-			'15 to 19 years' => array(275, 366),
-			'20 to 24 years' => array(276, 367),
-			'25 to 34 years' => array(277, 368),
-			'35 to 44 years' => array(278, 369),
-			'45 to 54 years' => array(279, 370),
-			'55 to 59 years' => array(280, 371),
-			'60 to 64 years' => array(281, 372),
-			'65 to 74 years' => array(282, 373),
-			'75 to 84 years' => array(283, 374),
-			'85 years and over' => array(284, 375)
+			'Under 5 years' => 272,
+			'5 to 9 years' => 273,
+			'10 to 14 years' => 274,
+			'15 to 19 years' => 275,
+			'20 to 24 years' => 276,
+			'25 to 34 years' => 277,
+			'35 to 44 years' => 278,
+			'45 to 54 years' => 279,
+			'55 to 59 years' => 280,
+			'60 to 64 years' => 281,
+			'65 to 74 years' => 282,
+			'75 to 84 years' => 283,
+			'85 years and over' => 284
 		);
-		foreach ($row_structure as $row_label => $category_ids) {
+        $total_population = $data2[1];
+		foreach ($row_structure as $row_label => $category_id) {
+		    $persons = $data2[$category_id];
+            $percent = round(($persons / $total_population) * 100, 2);
 			$this->rows[] = array(
 				$row_label,
-				number_format($data2[$category_ids[0]]),
-				$data2[$category_ids[1]].'%'
+				number_format($persons),
+				$percent.'%'
 			);
 		}
 	}
-	
+
 	private function demo_income() {
 		$county_name = $this->getCountyName();
 		$title = 'Household Income';
 		$year = $this->getYears();
 		$this->title = "$county_name\n$title\n($year)";
 		$this->columns = array('Income Range', 'People', 'Percent');
-		
+
 		$data2 = array();
 		foreach ($this->data as $category_id => $loc_keys) {
-			foreach ($loc_keys as $loc_key => $dates) { 
+			foreach ($loc_keys as $loc_key => $dates) {
 				foreach ($dates as $date => $value) {
 					$data2[$category_id] = $value;
 				}
 			}
 		}
-		
-		// 'Row label' => array(people category id, percent category id) 
+
+		// 'Row label' => array(people category id, percent category id)
 		$row_structure = array(
 			'Less than $10,000' => array(135, 223),
 			'$10,000 to $14,999' => array(14, 224),
@@ -132,24 +135,24 @@ class Table extends AppModel {
 			);
 		}
 	}
-	
+
 	private function demo_population() {
 		$county_name = $this->getCountyName();
 		$title = 'Population';
 		$year = $this->getYears();
 		$this->title = "$county_name\n$title\n($year)";
 		$this->columns = array('Year', 'Population', 'Growth');
-		
+
 		$data2 = array();
 		foreach ($this->data as $category_id => $loc_keys) {
-			foreach ($loc_keys as $loc_key => $dates) { 
+			foreach ($loc_keys as $loc_key => $dates) {
 				foreach ($dates as $date => $value) {
 					$data2[$date] = $value;
 				}
 			}
 		}
 		krsort($data2);
-		
+
 		$previous_population = null;
 		foreach ($data2 as $date => $population) {
 			if ($previous_population !== null) {
@@ -164,30 +167,30 @@ class Table extends AppModel {
 			);
 			$previous_population = $population;
 		}
-		
-		// Highlight pos/neg growth for column 2 in green and red 
+
+		// Highlight pos/neg growth for column 2 in green and red
 		$this->pos_neg_columns[] = 2;
-		
+
 		$this->footnote = "Growth refers to the change in population between the beginning and end of a given year.";
 	}
-	
+
 	private function demo_race() {
 		$county_name = $this->getCountyName();
 		$title = 'Ethnic Makeup';
 		$year = $this->getYears();
 		$this->title = "$county_name\n$title\n($year)";
 		$this->columns = array('Ethnic Category', 'People', 'Percent');
-		
+
 		$data2 = array();
 		foreach ($this->data as $category_id => $loc_keys) {
-			foreach ($loc_keys as $loc_key => $dates) { 
+			foreach ($loc_keys as $loc_key => $dates) {
 				foreach ($dates as $date => $value) {
 					$data2[$category_id] = $value;
 				}
 			}
 		}
-		
-		// 'Row label' => array(people category id, percent category id) 
+
+		// 'Row label' => array(people category id, percent category id)
 		$row_structure = array(
 			'White' => array(295, 385),
 			'Black' => array(296, 386),
@@ -206,7 +209,7 @@ class Table extends AppModel {
 			);
 		}
 	}
-	
+
 	private function inputs_education() {
 		$county_name = $this->getCountyName();
 		$title = 'Educational Attainment';
@@ -218,7 +221,7 @@ class Table extends AppModel {
 			array('colspan' => 2, 'label' => 'County'),
 			array('colspan' => 2, 'label' => 'State')
 		);
-		
+
 		/*
 		$combined_data = array(
 			0 => 'Less than 9th grade',
@@ -232,11 +235,11 @@ class Table extends AppModel {
 		$data2 = array();
 		foreach ($this->data as $category_id => $loc_keys) {
 			if (in_array($category_id , range(466, 476))) {
-				$type = 'percent';	
+				$type = 'percent';
 			} elseif (in_array($category_id , range(454, 464))) {
 				$type = 'people';
 			}
-			
+
 			switch ($category_id) {
 				case 454:
 				case 455:
@@ -275,16 +278,16 @@ class Table extends AppModel {
 					$data_point = 6;
 					break;
 			}
-			foreach ($loc_keys as $loc_key => $dates) { 
+			foreach ($loc_keys as $loc_key => $dates) {
 				foreach ($dates as $date => $value) {
 					if (! isset($data2[$data_point][$loc_key][$type])) {
-						$data2[$data_point][$loc_key][$type] = 0;	
+						$data2[$data_point][$loc_key][$type] = 0;
 					}
 					$data2[$data_point][$loc_key][$type] += $value;
 				}
 			}
 		}
-		
+
 		foreach ($data2 as $data_point => $loc_keys) {
 			$row_label = $combined_data[$data_point];
 			$row = array($row_label);
@@ -295,7 +298,7 @@ class Table extends AppModel {
 			$this->rows[] = $row;
 		}
 		*/
-		
+
 		$date = $this->segmentParams['dates'][0];
 		foreach ($this->data as $category_id => $loc_keys) {
 			foreach ($loc_keys as $loc_key => $dates) {
@@ -306,8 +309,8 @@ class Table extends AppModel {
 				}
 			}
 		}
-		
-		// 'Row label' => array(people category id, percent category id) 
+
+		// 'Row label' => array(people category id, percent category id)
 		$row_structure = array(
 			'Less than 9th grade' => array(5711, 5712),
 			'9th to 12th grade, no diploma' => array(456, 468),
@@ -330,22 +333,22 @@ class Table extends AppModel {
 				$state_per.'%'
 			);
 		}
-		
+
 		$this->footnote = "For population 25 years and older";
 	}
-	
+
 	private function econ_industry_comparebar() {
 		$county_name = $this->getCountyName();
 		$title = 'Industry Sector Comparison';
 		$year = $this->getYears();
 		$this->title = "$county_name\n$title\n($year)";
 		$this->columns = array(
-			'Industry', 
-			'$&nbsp;Millions', 
+			'Industry',
+			'$&nbsp;Millions',
 			'Percent',
-			'Persons', 
+			'Persons',
 			'Percent',
-			'$&nbsp;Millions', 
+			'$&nbsp;Millions',
 			'Percent'
 		);
 		$this->col_groups = array(
@@ -354,13 +357,13 @@ class Table extends AppModel {
 			array('colspan' => 2, 'label' => 'Employment'),
 			array('colspan' => 2, 'label' => 'Total Value-added')
 		);
-		
+
 		// Instead of looping through locations and dates,
 		// we'll use the knowledge that there is only one of each
 		$county_id = $this->getCountyId();
 		$loc_key = "2,$county_id";
 		$date = $this->segmentParams['dates'][0];
-		
+
 		// Collect totals for each measurement so that we can calculate
 		// and display each bar as the percentage of the total
 		$totals = array();
@@ -372,7 +375,7 @@ class Table extends AppModel {
 				}
 				$value = $this->data[$category_id][$loc_key][$date];
 				$totals[$measure] += $value;
-				
+
 				// Collect output values so we can sort categories by them
 				if ($measure == 'Output') {
 					$categories_by_output[$category_name] = $value;
@@ -380,7 +383,7 @@ class Table extends AppModel {
 			}
 		}
 		arsort($categories_by_output);
-		
+
 		foreach ($categories_by_output as $category_name => $v) {
 			$row = array($category_name);
 			foreach (array('Output', 'Employment', 'Total Value-added') as $measure) {
@@ -391,7 +394,7 @@ class Table extends AppModel {
 				$percentage = $value ? ($value / $total) : 0;
 				$percentage = round($percentage * 100, 2);
 				$row_values[$key] = $percentage;
-				
+
 				$value = number_format($value);
 				if ($measure != 'Employment') {
 					$value = '$'.$value;
@@ -401,21 +404,21 @@ class Table extends AppModel {
 			}
 			$this->rows[] = $row;
 		}
-		
+
 		$this->footnote = "\"Others\" include noncomparable imports, scrap, used and secondhand goods, ROW adjustment, inventory valuation adjustment and owner-occupied dwellings";
 	}
-	
+
 	private function econ_top10_employment() {
 		$county_name = $this->getCountyName();
 		$title = 'Top 10 Industries by Employment';
 		$year = $this->getYears();
 		$this->title = "$county_name\n$title\n($year)";
 		$this->columns = array('Industry', 'Employment');
-		
+
 		// Sort the set of values
 		$ordered_values = array();
 		foreach ($this->data as $category_id => $loc_keys) {
-			foreach ($loc_keys as $loc_key => $dates) { 
+			foreach ($loc_keys as $loc_key => $dates) {
 				foreach ($dates as $date => $value) {
 					$name = $this->getCategoryName($category_id);
 					$name = str_replace('Employment: ', '', $name);
@@ -424,26 +427,26 @@ class Table extends AppModel {
 			}
 		}
 		arsort($ordered_values);
-		
+
 		foreach ($ordered_values as $category_name => $value) {
 			$this->rows[] = array(
-				$category_name, 
+				$category_name,
 				round($value)
-			);	
+			);
 		}
 	}
-	
+
 	private function econ_top10_output() {
 		$county_name = $this->getCountyName();
 		$title = 'Top 10 Industries by Output';
 		$year = $this->getYears();
 		$this->title = "$county_name\n$title\n($year)";
 		$this->columns = array('Industry', 'Output ($ Millions)');
-		
+
 		// Sort the set of values
 		$ordered_values = array();
 		foreach ($this->data as $category_id => $loc_keys) {
-			foreach ($loc_keys as $loc_key => $dates) { 
+			foreach ($loc_keys as $loc_key => $dates) {
 				foreach ($dates as $date => $value) {
 					$name = $this->getCategoryName($category_id);
 					$name = str_replace('Output: ', '', $name);
@@ -452,15 +455,15 @@ class Table extends AppModel {
 			}
 		}
 		arsort($ordered_values);
-		
+
 		foreach ($ordered_values as $category_name => $value) {
 			$this->rows[] = array(
-				$category_name, 
+				$category_name,
 				'$'.number_format($value)
-			);	
+			);
 		}
 	}
-	
+
 	private function econ_wage_emp_comparison() {
 		$county_name = $this->getCountyName();
 		$year = $this->getYears();
@@ -472,20 +475,20 @@ class Table extends AppModel {
 			array('colspan' => 2, 'label' => 'Employment'),
 			array('colspan' => 2, 'label' => 'Wages')
 		);
-		
+
 		// Instead of looping through locations and dates,
 		// we'll use the knowledge that there is only one of each
 		$county_id = $this->getCountyId();
 		$loc_key = "2,$county_id";
 		$date = $this->segmentParams['dates'][0];
-		
+
 		// Create one-dimensional array of values
 		$values = array();
 		foreach ($this->data as $category_id => $loc_keys) {
 			$value = $loc_keys[$loc_key][$date];
 			$values[$category_id] = $value;
 		}
-		
+
 		foreach ($this->structure as $broad_sector => $measures) {
 			$row = array($broad_sector);
 			foreach ($measures as $measure => $category_id) {
@@ -503,16 +506,16 @@ class Table extends AppModel {
 			$this->rows[] = $row;
 		}
 	}
-	
+
 	private function econ_share($subchart = null, $title = null) {
 		if (! $subchart) {
-			return;	
+			return;
 		}
 		$county_name = $this->getCountyName();
 		$year = $this->getYears();
 		$this->title = "$county_name\n$title\n($year)";
 		$this->columns = array('Year', 'Wages', 'Employment');
-		
+
 		$county_id = $this->getCountyId();
 		$loc_key = "2,$county_id";
 		$values = array();
@@ -522,7 +525,7 @@ class Table extends AppModel {
 				$values[$year][$measure] = $value;
     	 	}
 	    }
-	    
+
 	    // Give each missing year a value of null
 	    $years = array_keys($values);
 	    $measures = array_keys($this->structure);
@@ -534,43 +537,43 @@ class Table extends AppModel {
 	    	}
 	    }
 	    krsort($values);
-	    
+
 		foreach ($values as $year => $year_values) {
 			$wages = isset($year_values['wages']) ? $year_values['wages'].'%' : '';
 			$employment = isset($year_values['employment']) ? $year_values['employment'].'%' : '';
 			$this->rows[] = array($year, $wages, $employment);
 		}
 	}
-	
+
 	private function econ_share_farm() {
 		$this->econ_share('econ_share_farm', 'Farm Employment');
 	}
-	
+
 	private function econ_share_ag() {
 		$this->econ_share('econ_share_ag', 'Agricultural services, forestry, fishing, and mining');
 	}
-	
+
 	private function econ_share_construction() {
 		$this->econ_share('econ_share_construction', 'Construction');
 	}
-	
+
 	private function econ_share_manufacturing() {
 		$this->econ_share('econ_share_manufacturing', 'Manufacturing');
 	}
-	
+
 	private function econ_share_tput() {
 		$this->econ_share('econ_share_tput', 'Transportation, public utilities, and trade');
 	}
-	
+
 	private function econ_share_services() {
 		$this->econ_share('econ_share_services', 'Services');
 		$this->footnote = "Note the changeover from <acronym title=\"Standard Industrial Classification\">SIC</acronym> to <acronym title=\"North American Industry Classification System\">NAICS</acronym> reporting between 2000 and 2001.";
 	}
-	
+
 	private function econ_share_gov() {
 		$this->econ_share('econ_share_gov', 'Government and government enterprises');
 	}
-	
+
 	private function econ_transfer_breakdown() {
 		$county_name = $this->getCountyName();
 		$title = 'Types of Transfer Payments';
@@ -578,16 +581,16 @@ class Table extends AppModel {
 		$this->title = "$county_name\n$title\n($year)";
 		$this->columns = array('Category', '$ Thousands', 'Percent');
 		$this->footnote = "\"Other\" includes unemployment insurance compensation, veterans benefits, and federal education and training assistance.";
-		
+
 		$data2 = array();
 		foreach ($this->data as $category_id => $loc_keys) {
-			foreach ($loc_keys as $loc_key => $dates) { 
+			foreach ($loc_keys as $loc_key => $dates) {
 				foreach ($dates as $date => $value) {
 					$data2[$category_id] = $value;
 				}
 			}
 		}
-		
+
 		/*	Categories:
 			571		Total
 			576		Retirement / Disability
@@ -613,33 +616,33 @@ class Table extends AppModel {
 			round($percent, 1).'%'
 		);
 	}
-	
+
 	private function econ_transfer_percent() {
 		$county_name = $this->getCountyName();
 		$title = 'Types of Transfer Payments';
 		$year = $this->getYears();
 		$this->title = "$county_name\n$title\n($year)";
 		$this->columns = array('Category', 'Percent');
-		
+
 		// Instead of looping through locations and dates,
 		// we'll use the knowledge that there is only one of each
 		$county_id = $this->getCountyId();
 		$loc_key = "2,$county_id";
 		$date = $this->segmentParams['dates'][0];
-	    
+
 		$categories = array_keys($this->data);
 		$category_id = reset($categories);
 		$value = $this->data[$category_id][$loc_key][$date];
 		$this->rows[] = array(
-			'Transfer Payments', 
+			'Transfer Payments',
 			round($value, 1).'%'
 		);
 		$this->rows[] = array(
-			'Remainder of Personal Income', 
+			'Remainder of Personal Income',
 			round((100 - $value), 1).'%'
 		);
 	}
-	
+
 	private function econ_transfer_line() {
 		$county_name = $this->getCountyName();
 		$state_name = $this->getStateName();
@@ -647,46 +650,46 @@ class Table extends AppModel {
 		$title = "Transfer Payments as Percent of Personal Income";
 		$this->title = "$county_name\n$title\n($year)";
 		$this->columns = array('Year', $county_name, $state_name);
-		
+
 		$rows = $this->getArrangedData('date,location');
 		krsort($rows);
-		
+
 		foreach ($rows as $date => $loc_keys) {
 			$county_value = $state_value = null;
 			foreach ($loc_keys as $loc_key => $value) {
 				if ($this->isCounty($loc_key)) {
 					$county_value = $value;
 				} elseif ($this->isState($loc_key)) {
-					$state_value = $value;	
+					$state_value = $value;
 				} else {
 					throw new InternalErrorException("Loc key $loc_key is neither a county nor a state");
 				}
-			} 
+			}
 			$this->rows[] = array(
-				substr($date, 0, 4), 
+				substr($date, 0, 4),
 				round($county_value, 1).'%',
 				round($state_value, 1).'%'
 			);
 		}
 	}
-	
+
 	private function econ_employment() {
 		$county_name = $this->getCountyName();
 		$title = 'Employment';
 		$year = $this->getYears();
 		$this->title = "$county_name\n$title\n($year)";
 		$this->columns = array('Year', 'Employment', 'Growth');
-		
+
 		$data2 = array();
 		foreach ($this->data as $category_id => $loc_keys) {
-			foreach ($loc_keys as $loc_key => $dates) { 
+			foreach ($loc_keys as $loc_key => $dates) {
 				foreach ($dates as $date => $value) {
 					$data2[$date] = $value;
 				}
 			}
 		}
 		krsort($data2);
-		
+
 		$previous_employment = null;
 		foreach ($data2 as $date => $employment) {
 			if ($previous_employment !== null) {
@@ -701,13 +704,13 @@ class Table extends AppModel {
 			);
 			$previous_employment = $employment;
 		}
-		
-		// Highlight pos/neg growth for column 2 in green and red 
+
+		// Highlight pos/neg growth for column 2 in green and red
 		$this->pos_neg_columns[] = 2;
-		
+
 		$this->footnote = "Growth refers to the change in employment between the beginning and end of a given year.";
 	}
-	
+
 	private function econ_unemployment() {
 		$county_name = $this->getCountyName();
 		$state_name = $this->getStateName();
@@ -715,10 +718,10 @@ class Table extends AppModel {
 		$title = 'Unemployment Rate';
 		$this->title = "$county_name\n$title\n($year)";
 		$this->columns = array('Year', $county_name, $state_name);
-		
+
 		$rows = $this->getArrangedData('date,location');
 		krsort($rows);
-		
+
 		foreach ($rows as $date => $loc_keys) {
 			$county_value = $state_value = null;
 			foreach ($loc_keys as $loc_key => $value) {
@@ -726,19 +729,19 @@ class Table extends AppModel {
 				if ($this->isCounty($loc_key)) {
 					$county_value = $value;
 				} elseif ($this->isState($loc_key)) {
-					$state_value = $value;	
+					$state_value = $value;
 				} else {
 					throw new InternalErrorException("Loc key $loc_key is neither a county nor a state");
 				}
-			} 
+			}
 			$this->rows[] = array(
-				substr($date, 0, 4), 
+				substr($date, 0, 4),
 				round($county_value, 1).'%',
 				round($state_value, 1).'%'
 			);
 		}
 	}
-	
+
 	private function inputs_workerscomp() {
 		$county_name = $this->getCountyName();
 		$state_name = $this->getStateName();
@@ -746,10 +749,10 @@ class Table extends AppModel {
 		$title = 'Workers\' Compensation Insurance Paid';
 		$this->title = "$county_name\n$title\n($year)";
 		$this->columns = array('Year', $county_name, $state_name);
-		
+
 		$rows = $this->getArrangedData('date,location');
 		krsort($rows);
-		
+
 		foreach ($rows as $date => $loc_keys) {
 			$county_value = $state_value = null;
 			foreach ($loc_keys as $loc_key => $value) {
@@ -757,33 +760,33 @@ class Table extends AppModel {
 				if ($this->isCounty($loc_key)) {
 					$county_value = $value;
 				} elseif ($this->isState($loc_key)) {
-					$state_value = $value;	
+					$state_value = $value;
 				} else {
 					throw new InternalErrorException("Loc key $loc_key is neither a county nor a state");
 				}
 			}
 			$this->rows[] = array(
-				substr($date, 0, 4), 
+				substr($date, 0, 4),
 				is_null($county_value) ? '' : '$'.$county_value,
 				is_null($state_value) ? '' : '$'.$state_value
 			);
 		}
 		$this->footnote = 'Amounts are in thousands of dollars';
 	}
-	
+
 	private function inputs_taxrates() {
 		/* To do:
 		 * Deal with no information being available for a county
 		 */
-		
+
 		if (empty($this->data)) {
 			$this->footnote = 'Sorry, no tax rate information is currently available for this county.';
 			return;
 		}
-		
+
 		// For some counties, no information is available about that county's tax districts
 		$no_tax_districts = count($this->segmentParams['locations']) == 1;
-		
+
 	    $rows = array();
 	    $applicable_tax_ids = array();
 	    $date = $this->segmentParams['dates'][0];
@@ -799,38 +802,38 @@ class Table extends AppModel {
 						$county_id = $this->getTaxDistrictCountyId($loc_id);
 					}
 					$rows[$loc_id][$category_id] = $value;
-					
+
 				/* If a value is associated with a county, rather than a
 				 * specific tax district, then that value applies to all
 				 * tax districts in that county. */
 				} elseif ($this->isCounty($loc_key)) {
 					$all_districts_values[$category_id] = $value;
-					
+
 				} else {
 					throw new InternalErrorException("Loc key $loc_key is neither a county nor a tax district");
 				}
-				
+
 				if ($value) {
 					$applicable_tax_ids[$category_id] = true;
 				}
 			}
 		}
 		ksort($rows);
-		
+
 		// Set meta data for table
 		$county_name = $this->getCountyName($county_id);
 		$year = $this->getYears();
 		$title = 'Tax Rates';
 		$this->title = "$county_name\n$title\n($year)";
-		
+
 		// Set columns
 		$this->columns = array('Tax District');
 		foreach ($this->structure as $category_id => $name) {
 			if (isset($applicable_tax_ids[$category_id])) {
 				$this->columns[] = $name;
-			}	
+			}
 		}
-		
+
 		if ($no_tax_districts) {
 			$row = array('(All tax districts)');
 			foreach ($this->structure as $category_id => $name) {
@@ -861,21 +864,21 @@ class Table extends AppModel {
 			ksort($this->rows);
 		}
 	}
-	
+
 	private function entre_smallfirms($small_firms_category) {
 		// Collect the years used in this table
 		$years = array();
 		foreach ($this->segmentParams['dates'] as $date) {
 			$years[] = substr($date, 0, 4);
 		}
-		
+
 		$county_name = $this->getCountyName();
 		$title = 'Small Firms ('.ucwords($small_firms_category).') Employment';
 		$this->title = "$county_name\n$title";
 		$this->columns = array(
-			'Category', 
-			'Total Firms', 'Small Firms', 
-			'Total Firms', 'Small Firms', 
+			'Category',
+			'Total Firms', 'Small Firms',
+			'Total Firms', 'Small Firms',
 			'Change in Small Firms'
 		);
 		$this->col_groups = array(
@@ -885,7 +888,7 @@ class Table extends AppModel {
 			null
 		);
 		$this->pos_neg_columns[] = 5;
-		
+
 		$county_id = $this->getCountyId();
 		$loc_key = "2,$county_id";
 		$all_firms_category = 'Total establishments';
@@ -896,7 +899,7 @@ class Table extends AppModel {
 			//print_r($all_firms_values);
 			$small_category_id = $child_categories[$small_firms_category];
 			$small_firms_values = $this->data[$small_category_id][$loc_key];
-			
+
 			$all_first = isset($all_firms_values[$years[0].'0000']) ? $all_firms_values[$years[0].'0000'] : null;
 			$small_first = isset($small_firms_values[$years[0].'0000']) ? $small_firms_values[$years[0].'0000'] : null;
 			$all_second = isset($all_firms_values[$years[1].'0000']) ? $all_firms_values[$years[1].'0000'] : null;
@@ -904,9 +907,9 @@ class Table extends AppModel {
 			if (! is_null($small_first) && ! is_null($small_second)) {
 				$change = $small_second - $small_first;
 			} else {
-				$change = null;	
+				$change = null;
 			}
-			
+
 			$category_name = $this->getCategoryName($parent_id);
 			$rows[$category_name] = array(
 				$category_name,
@@ -917,7 +920,7 @@ class Table extends AppModel {
 				$change
 			);
 		}
-		
+
 		// Place 'total' at the bottom of the table
 		foreach ($rows as $category_name => $row) {
 			if ($category_name != 'Total') {
@@ -927,19 +930,19 @@ class Table extends AppModel {
 		ksort($this->rows);
 		$this->rows[] = $rows['Total'];
 	}
-	
+
 	private function entre_smallfirms_1_4() {
 		$this->entre_smallfirms('1-4 employees');
 	}
-	
+
 	private function entre_smallfirms_5_9() {
 		$this->entre_smallfirms('5-9 employees');
 	}
-	
+
 	private function entre_smallfirms_10_19() {
 		$this->entre_smallfirms('10-19 employees');
 	}
-	
+
 	private function youth_wages() {
 		$county_name = $this->getCountyName();
 		$state_name = $this->getStateName();
@@ -947,17 +950,17 @@ class Table extends AppModel {
 		$title = 'Quarterly Youth Wages';
 		$this->title = "$county_name\n$title\n($year)";
 		$this->columns = array('Quarter', $county_name, $state_name);
-		
+
 		$rows = $this->getArrangedData('date,location');
 		krsort($rows);
-		
+
 		foreach ($rows as $date => $loc_keys) {
 			$county_value = $state_value = null;
 			foreach ($loc_keys as $loc_key => $value) {
 				if ($this->isCounty($loc_key)) {
 					$county_value = $value;
 				} elseif ($this->isState($loc_key)) {
-					$state_value = $value;	
+					$state_value = $value;
 				} else {
 					throw new InternalErrorException("Loc key $loc_key is neither a county nor a state");
 				}
@@ -965,13 +968,13 @@ class Table extends AppModel {
 			$year = substr($date, 0, 4);
 			$quarter = $year.' Q'.(substr($date, 4, 2) / 3);
 			$this->rows[] = array(
-				$quarter, 
+				$quarter,
 				$county_value ? '$'.number_format($county_value) : null,
 				$state_value ? '$'.number_format($state_value) : null
 			);
 		}
 	}
-	
+
 	private function youth_poverty() {
 		$county_name = $this->getCountyName();
 		$state_name = $this->getStateName();
@@ -982,7 +985,7 @@ class Table extends AppModel {
 	        'Area',
 	        'Percent of Youth in Poverty'
 	    );
-	    
+
 	    $category_id = $this->segmentParams['categories'][0];
 	    $date = $this->segmentParams['dates'][0];
 		foreach ($this->data[$category_id] as $loc_key => $dates) {
@@ -990,14 +993,14 @@ class Table extends AppModel {
 			if ($this->isCounty($loc_key)) {
 				$loc_name = $county_name;
 			} elseif ($this->isState($loc_key)) {
-				$loc_name = $state_name;	
+				$loc_name = $state_name;
 			} else {
 				throw new InternalErrorException("Loc key $loc_key is neither a county nor a state");
 			}
 			$this->rows[] = array($loc_name, $value.'%');
 		}
 	}
-	
+
 	private function youth_graduation() {
 		$county_name = $this->getCountyName();
 		$year = $this->getYears();
@@ -1007,7 +1010,7 @@ class Table extends AppModel {
 	        'School Corporation',
 	        'Graduation Rate'
 	    );
-		
+
 	    // Sort the set of values
 		$rows = array();
 		$category_id = $this->segmentParams['categories'][0];
@@ -1025,7 +1028,7 @@ class Table extends AppModel {
 			}
 		}
 		ksort($rows);
-		
+
 		// Add sorted school corp bars to chart
 		foreach ($rows as $school_corp_name => $value) {
 			$this->rows[] = array(
@@ -1033,7 +1036,7 @@ class Table extends AppModel {
 				$value.'%'
 			);
 		}
-		
+
 		// Add state bar at bottom
 		if ($state_value) {
 			$this->rows[] = array(
@@ -1041,10 +1044,10 @@ class Table extends AppModel {
 				$state_value.'%'
 			);
 		} else {
-			throw new InternalErrorException("No state average graduation rate found");	
+			throw new InternalErrorException("No state average graduation rate found");
 		}
 	}
-	
+
 	private function soc_inequality() {
 		$county_name = $this->getCountyName();
 		$state_name = $this->getStateName();
@@ -1060,15 +1063,15 @@ class Table extends AppModel {
 				if ($this->isCounty($loc_key)) {
 					$county_value = $value;
 				} elseif ($this->isState($loc_key)) {
-					$state_value = $value;	
+					$state_value = $value;
 				} else {
 					throw new InternalErrorException("Loc key $loc_key is neither a county nor a state");
 				}
-			} 
+			}
 			$this->rows[] = array(substr($date, 0, 4), $county_value, $state_value);
 		}
 	}
-	
+
 	private function soc_charitable() {
 		$county_name = $this->getCountyName();
 		$year = $this->getYears();
@@ -1085,13 +1088,13 @@ class Table extends AppModel {
 			array('colspan' => 3, 'label' => 'Expenses'),
 			array('colspan' => 3, 'label' => 'Employment')
 		);
-		
+
 		// Instead of looping through locations and dates,
 		// we'll use the knowledge that there is only one of each
 		$county_id = $this->segmentParams['locations'][0]['id'];
 		$loc_key = "2,$county_id";
 		$date = $this->segmentParams['dates'][0];
-		
+
 		foreach ($this->structure['org_types'] as $parent_id => $org_type) {
 			$row = array($org_type);
 			foreach ($this->structure['categories'][$parent_id] as $category_id => $category_name) {
@@ -1112,24 +1115,24 @@ class Table extends AppModel {
 			$this->rows[] = $row;
 		}
 	}
-	
+
 	private function soc_income_charorgs() {
 		$county_name = $this->getCountyName();
 		$title = 'Income from Social and Fraternal Organizations';
 		$year = $this->getYears();
 		$this->title = "$county_name\n$title\n($year)";
 		$this->columns = array('Year', 'Income', 'Growth');
-		
+
 		$data2 = array();
 		foreach ($this->data as $category_id => $loc_keys) {
-			foreach ($loc_keys as $loc_key => $dates) { 
+			foreach ($loc_keys as $loc_key => $dates) {
 				foreach ($dates as $date => $value) {
 					$data2[$date] = $value;
 				}
 			}
 		}
 		krsort($data2);
-		
+
 		$previous_population = null;
 		foreach ($data2 as $date => $income) {
 			if ($previous_population !== null) {
@@ -1144,10 +1147,10 @@ class Table extends AppModel {
 			);
 			$previous_population = $income;
 		}
-		
-		// Highlight pos/neg growth for column 2 in green and red 
+
+		// Highlight pos/neg growth for column 2 in green and red
 		$this->pos_neg_columns[] = 2;
-		
+
 		$this->footnote = "Growth refers to the change in income between the beginning and end of a given year.";
 	}
 }
