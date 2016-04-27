@@ -10,7 +10,7 @@ class User extends AppModel {
 		'name' => array(
 			'notempty' => array(
 				'message' => 'A non-blank name is required.',
-				'rule' => array('notempty')
+				'rule' => array('notBlank')
 			)
 		),
 		'email' => array(
@@ -26,7 +26,7 @@ class User extends AppModel {
 		'password' => array(
 			'notempty' => array(
 				'message' => 'A non-blank password is required.',
-				'rule' => array('notempty')
+				'rule' => array('notBlank')
 			)
 		),
 		'new_password' => array(
