@@ -312,17 +312,15 @@ class SegmentData extends AppModel {
 			396,	// % Pacific Islander
 			401,	// % Other (one race)
 			402,	// % Two or more races
-			409,	// % Hispanic or Latino
 			295,	// Pop. White
 			296,	// Pop. Black
 			297,	// Pop. Native American
 			298,	// Pop. Asian
 			306,	// Pop. Pacific Islander
 			311,	// Pop. Other (one race)
-			312,	// Pop. Two or more races
-			319		// Pop. Hispanic or Latino
+			312 	// Pop. Two or more races
 		);
-		$this->__setDates(2010);
+		$this->__setDates(2015);
 		$this->__setCounty();
 	}
 

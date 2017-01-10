@@ -194,7 +194,6 @@ class Table extends AppModel {
 		$row_structure = array(
 			'White' => array(295, 385),
 			'Black' => array(296, 386),
-			'Hispanic or Latino' => array(319, 409),
 			'Asian' => array(298, 388),
 			'Pacific Islander' => array(306, 396),
 			'Native American' => array(297, 387),
