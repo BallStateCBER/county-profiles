@@ -294,7 +294,7 @@ class SegmentData extends AppModel {
 			range(135, 137), 	// Persons values (<10k, 150k+, 200k+)
 			range(14, 20) 		// Persons values (10k+, ... 100k+)
 		);
-		$this->__setDates(2010);
+		$this->__setDates(2014);
 		$this->__setCounty();
 	}
 
