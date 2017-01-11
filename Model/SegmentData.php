@@ -343,7 +343,7 @@ class SegmentData extends AppModel {
 			473,	// Bachelor's
 			5726	// Graduate or professional
 		);
-		$this->__setDates(2010);
+		$this->__setDates(2015);
 		$this->__setCounty();
 		$this->__setState();
 	}
