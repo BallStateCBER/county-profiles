@@ -142,7 +142,6 @@ App::uses('FireCake','DebugKit.Lib');
 
 if (Configure::read('debug')) {
     CakePlugin::load('DataImport');
-    CakePlugin::load('CberDataGrabberPlugin');
 }
 
 
