@@ -894,10 +894,10 @@ class Table extends AppModel {
 		$rows = array();
 		foreach ($this->structure as $parent_id => $child_categories) {
 			$all_category_id = $child_categories[$all_firms_category];
-			$all_firms_values = $this->data[$all_category_id][$loc_key];
-			//print_r($all_firms_values);
+			$all_firms_values = isset($this->data[$all_category_id]) ? $this->data[$all_category_id][$loc_key] : [];
+
 			$small_category_id = $child_categories[$small_firms_category];
-			$small_firms_values = $this->data[$small_category_id][$loc_key];
+			$small_firms_values = isset($this->data[$small_category_id]) ? $this->data[$small_category_id][$loc_key] : [];
 
 			$all_first = isset($all_firms_values[$years[0].'0000']) ? $all_firms_values[$years[0].'0000'] : null;
 			$small_first = isset($small_firms_values[$years[0].'0000']) ? $small_firms_values[$years[0].'0000'] : null;
