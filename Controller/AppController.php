@@ -54,10 +54,14 @@ class AppController extends Controller {
 				)
 			),
 			'authorize' => array('Controller'),
-		)
+		),
+        'Security'
 	);
 
 	public function beforeFilter() {
+        $this->Security->blackHoleCallback = 'forceSSL';
+        $this->Security->requireSecure();
+
 		// Using "rijndael" encryption because the default "cipher" type of encryption fails to decrypt when PHP has the Suhosin patch installed.
 		// See: http://cakephp.lighthouseapp.com/projects/42648/tickets/471-securitycipher-function-cannot-decrypt
 		$this->Cookie->type('rijndael');
@@ -118,4 +122,14 @@ class AppController extends Controller {
 	public function isAuthorized($user = null) {
 		return true;
 	}
+
+    /**
+     * Redirects the current request to HTTPS
+     *
+     * @return mixed
+     */
+    public function forceSSL()
+    {
+        return $this->redirect('https://' . env('SERVER_NAME') . $this->here);
+    }
 }
